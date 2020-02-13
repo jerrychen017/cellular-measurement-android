@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">UDP_Tools</string>
+    <string name="send">SEND</string>
 </resources>
