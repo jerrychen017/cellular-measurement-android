@@ -6,7 +6,7 @@ extern "C" {
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_udp_1tools_MainActivity_stringFromJNI(
+Java_com_example_udp_1tools_MainActivity_initSendFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string address =  "54.193.124.120";

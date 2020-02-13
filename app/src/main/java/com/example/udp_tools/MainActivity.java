@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    boolean start = false;
+    // first UDP packet has been sent
+    boolean initSend = false;
 
 
     @Override
@@ -30,13 +31,13 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                start = true;
+                initSend = true;
                 TextView tv = findViewById(R.id.sample_text);
                 String RTT;
-                if (start) {
+                if (initSend) {
                    RTT = resendFromJNI();
                 } else {
-                   RTT = stringFromJNI();
+                   RTT = initSendFromJNI();
                 }
                 tv.setText(RTT);
                 System.out.println(RTT);
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
+    public native String initSendFromJNI();
 
     public native String resendFromJNI();
 }
