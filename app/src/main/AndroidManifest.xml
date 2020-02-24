@@ -4,6 +4,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- BEGIN Permission needed for AR Core -->
+    <uses-sdk android:minSdkVersion="14" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- END Permission needed for AR Core -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- BEGIN AR Core -->
+        <!-- Indicates that the app supports, but does not require ARCore ("AR Optional").
+         Unlike "AR Required" apps, the Google Play Store will not automatically
+         download and install Google Play Services for AR when the app is installed.
+        -->
+        <meta-data android:name="com.google.ar.core" android:value="optional" />
+        <!-- END AR Core -->
     </application>
 
 </manifest>
