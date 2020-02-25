@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,13 +34,22 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 initSend = true;
                 TextView tv = findViewById(R.id.sample_text);
+
+                TextView output = findViewById(R.id.output);
+
+                EditText ipAddress = (EditText) findViewById(R.id.ip_address);
+                EditText port = (EditText) findViewById(R.id.port);
+                String ipStr = ipAddress.getText().toString();
+                int portInt = Integer.parseInt(port.getText().toString());
+
                 String RTT;
                 if (initSend) {
-                   RTT = resendFromJNI();
+                   RTT = resendFromJNI(ipStr, portInt);
                 } else {
-                   RTT = initSendFromJNI();
+                   RTT = initSendFromJNI(ipStr, portInt);
                 }
                 tv.setText(RTT);
+                output.setText(output.getText().toString()  + "\n" + RTT);
                 System.out.println(RTT);
             }
         });
@@ -49,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String initSendFromJNI();
+    public native String initSendFromJNI(String ip, int port);
 
-    public native String resendFromJNI();
+    public native String resendFromJNI(String ip, int port);
 }
