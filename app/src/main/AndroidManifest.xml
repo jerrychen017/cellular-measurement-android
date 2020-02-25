@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- BEGIN Permission needed for AR Core -->
-    <uses-sdk android:minSdkVersion="14" />
-    <uses-permission android:name="android.permission.CAMERA" />
+<!--    <uses-sdk android:minSdkVersion="14" />-->
+<!--    <uses-permission android:name="android.permission.CAMERA" />-->
     <!-- END Permission needed for AR Core -->
 
     <application
