@@ -17,6 +17,31 @@
 
 #include <sys/time.h>
 
+#define PORT 9008
 #define BUFF_SIZE 1000
-#define TIMEOUT_SEC 2
+#define TIMEOUT_SEC 5
 #define TIMEOUT_USEC 0
+#define PACKET_SIZE 1400
+#define NUM_SEND 10
+
+enum PacketType {
+    TIMING,
+    REPORT
+};
+
+typedef struct Packet {
+    int type;
+    char buffer[PACKET_SIZE + 8];
+} Packet;
+
+typedef struct TimingPacket {
+    int type;
+    int seq;
+    char buffer[PACKET_SIZE];
+} TimingPacket;
+
+typedef struct ReportPacket {
+    int type;
+    int seq;
+    float throughput;
+} ReportPacket;

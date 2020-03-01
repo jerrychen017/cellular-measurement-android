@@ -2,6 +2,7 @@ package com.example.udp_tools;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,31 +26,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FloatingActionButton configButton = findViewById(R.id.config_button);
+        FloatingActionButton sendButton = findViewById(R.id.send_button);
+//        AsyncTask myAsyncTask;
 
-
-
-        FloatingActionButton button = findViewById(R.id.send_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        configButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                initSend = true;
+                //bind port
                 TextView tv = findViewById(R.id.sample_text);
-
-                TextView output = findViewById(R.id.output);
 
                 EditText ipAddress = (EditText) findViewById(R.id.ip_address);
                 EditText port = (EditText) findViewById(R.id.port);
                 String ipStr = ipAddress.getText().toString();
                 int portInt = Integer.parseInt(port.getText().toString());
 
-                String RTT;
-                if (initSend) {
-                   RTT = resendFromJNI(ipStr, portInt);
+                int status = bindFromJNI(ipStr, portInt);
+
+                if (status == 0) {
+                    tv.setText("Binding was successful!");
                 } else {
-                   RTT = initSendFromJNI(ipStr, portInt);
+                    tv.setText("Binding failed!");
                 }
-                tv.setText(RTT);
-                output.setText(output.getText().toString()  + "\n" + RTT);
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView output = findViewById(R.id.output);
+                EditText ipAddress = (EditText) findViewById(R.id.ip_address);
+                EditText port = (EditText) findViewById(R.id.port);
+                String ipStr = ipAddress.getText().toString();
+                int portInt = Integer.parseInt(port.getText().toString());
+
+                String RTT;
+                RTT = sendFromJNI(ipStr, portInt);
+
+                output.setText( RTT);
                 System.out.println(RTT);
             }
         });
@@ -59,7 +73,26 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String initSendFromJNI(String ip, int port);
+    public native String sendFromJNI(String ip, int port);
 
-    public native String resendFromJNI(String ip, int port);
+    public native int bindFromJNI(String ip, int port);
+}
+
+class MyAsyncTask extends AsyncTask<String, String, String> {
+
+
+    @Override
+    protected String doInBackground(String... strings) {
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(String string) {
+        super.onPostExecute(string);
+    }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+    }
 }
