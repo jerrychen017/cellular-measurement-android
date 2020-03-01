@@ -7,7 +7,7 @@
 #include "net_include.h"
 #include "utils.h"
 
-double echo_client_start(int port, const char* address, bool resend);
+double echo_client(const char* address, int port);
 int client_bind(const char* address, int port);
 char * client_send(const char* address, int port);
 #endif //UDP_TOOLS_ECHO_CLIENT_H
