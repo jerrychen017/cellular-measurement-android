@@ -26,7 +26,8 @@
 
 enum PacketType {
     TIMING,
-    REPORT
+    REPORT,
+    ECHO
 };
 
 typedef struct Packet {
@@ -45,3 +46,8 @@ typedef struct ReportPacket {
     int seq;
     float throughput;
 } ReportPacket;
+
+typedef struct EchoPacket {
+    int type;
+    int seq;
+} EchoPacket;

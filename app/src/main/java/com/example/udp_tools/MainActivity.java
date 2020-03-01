@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
+    static int echoSequence = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
                 String ipStr = ipAddress.getText().toString();
                 int portInt = Integer.parseInt(port.getText().toString());
 
-                String RTT;
-                RTT = interarrivalFromJNI(ipStr, portInt);
+                String interarrivalOut;
+                interarrivalOut = interarrivalFromJNI(ipStr, portInt);
 
-                output.setText( RTT);
-                System.out.println(RTT);
+                output.append("\n" +interarrivalOut);
+                System.out.println(interarrivalOut);
             }
         });
 
@@ -74,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 int portInt = Integer.parseInt(port.getText().toString());
 
                 String RTT;
-                RTT = echoFromJNI(ipStr, portInt);
+                RTT = echoFromJNI(ipStr, portInt, ++echoSequence);
 
-                output.setText( RTT);
+                output.append("\n" + RTT);
                 System.out.println(RTT);
             }
         });
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public native int bindFromJNI(String ip, int port);
 
-    public native String echoFromJNI(String ip, int port);
+    public native String echoFromJNI(String ip, int port, int seq);
 }
 
 class MyAsyncTask extends AsyncTask<String, String, String> {

@@ -29,8 +29,9 @@ void send_timing_packets(int s, struct sockaddr_in send_addr)
  *
  * Should report delay of each and avg delay
  */
-void compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
+char * compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
 {
+    char * report = malloc(sizeof(char) * NUM_SEND * 200);
     fd_set mask;
     fd_set read_mask;
     int num;
@@ -51,6 +52,9 @@ void compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
     double avg_interarrival = 0;
     int count = 0;
     int next_num = 0;
+    int dropped = 0;
+    double min_time = DBL_MAX;
+    double max_time = 0;
 
     for (;;) {
         read_mask = mask;
@@ -78,8 +82,9 @@ void compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
                 }
                 clock_gettime(CLOCK_MONOTONIC, &ts_curr);
                 if (next_num != recvTiming->seq){
-                    printf("UNEXPECTED SEQUENCE NUMBER, EXITING...%d %d\n", next_num, recvTiming->seq);
-                    exit(1);
+                    sprintf(report + strlen(report), "UNEXPECTED SEQUENCE NUMBER, EXITING...%d %d\n", next_num, recvTiming->seq);
+                    dropped += recvTiming->seq - next_num;
+                    next_num = recvTiming->seq;
                 }
                 if (next_num != 0) {
                     // Trying and formatting new timer
@@ -96,26 +101,34 @@ void compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
                     }
 
                     if (ts_diff.tv_sec < 0) {
-                        printf("NEGATIVE TIME\n");
-                        exit(1);
+                        sprintf(report + strlen(report), "NEGATIVE TIME\n", 1);
+//                        exit(1);
+                        return report;
                     }
                     double msec = ts_diff.tv_sec * 1000 + ((double) ts_diff.tv_nsec) / 1000000;
+                    if(msec < min_time){
+                        min_time = msec;
+                    }
+                    if(msec > max_time){
+                        max_time = msec;
+                    }
                     // Skip first few packets due to start up costs
                     if(next_num > 0){
                         avg_interarrival += msec;
                         count += 1;
                     }
-                    printf("%.5f ms interarrival time\n", msec);
+                    sprintf(report + strlen(report), "%.5f ms interarrival time\n", msec);
                 }
                 next_num += 1;
                 ts_prev = ts_curr;
             }
         } else {
             if(count > 0){
-                printf("Average Interarrival time %.5f ms\n", avg_interarrival/count);
+                sprintf(report + strlen(report), "Dropped packets: %d\n", dropped);
+                sprintf(report + strlen(report), "Average Interarrival time %.5f ms\n", avg_interarrival/count);
                 float avg = avg_interarrival/count;
                 float throughput = ((1400.0*8)/(1024*1024))/(avg/1000);
-                printf("Computed Throughput %f Mbps\n", throughput);
+                sprintf(report + strlen(report), "Computed Throughput %f Mbps\n", throughput);
 
                 //Compute with start -> end
 
@@ -134,11 +147,12 @@ void compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
                 }
 
                 if (ts_diff.tv_sec < 0) {
-                    printf("NEGATIVE TIME\n");
-                    exit(1);
+                    sprintf(report + strlen(report), "NEGATIVE TIME\n", 1);
+//                    exit(1);
+                    return report;
                 }
                 double s = ts_diff.tv_sec + ((double) ts_diff.tv_nsec) / 1000000000;
-                printf("Coarse bandwith calculation %f Mbps\n", (size*8*(NUM_SEND-1)/1024.0/1024)/s);
+                sprintf(report + strlen(report), "Coarse bandwidth calculation %f Mbps\n", (size*8*(NUM_SEND-1)/1024.0/1024)/s);
 
 
             }
@@ -147,7 +161,10 @@ void compute_bandwidth(int s, struct sockaddr_in send_addr, int delay)
             avg_interarrival = 0;
             count = 0;
             next_num = 0;
-            return;
+            dropped = 0;
+            min_time = DBL_MAX;
+            max_time = 0;
+            return report;
         }
     }
 
@@ -196,7 +213,7 @@ char * client_send(const char* address, int port) {
     // socket both for sending and receiving
     int sk = socket(AF_INET, SOCK_DGRAM, 0);
     if (sk < 0) {
-        sprintf(out, "echo_client: socket error\n");
+        sprintf(out, "echo_client: socket error with sk==%d\n", sk);
         return out;
     }
 
@@ -212,7 +229,7 @@ char * client_send(const char* address, int port) {
     int server_fd;
     server_name = gethostbyname(address);
     if (server_name == NULL) {
-        sprintf(out, "echo_client: invalid server address\n");
+        sprintf(out, "echo_client: invalid server address with address %s\n", server_name);
         return out;
     }
 
@@ -226,15 +243,17 @@ char * client_send(const char* address, int port) {
 
     send_timing_packets(sk, echo_pac_addr);
 
-    compute_bandwidth(sk, echo_pac_addr, 100);
-    return out;
+    free(out);
+    char * report = compute_bandwidth(sk, echo_pac_addr, 100);
+    return report;
 }
 
-double echo_client(const char* address, int port) {
-
+char * echo_client(const char* address, int port, int sequence) {
+    char * out = malloc(sizeof(char) * 300);
 // initialize starting packet and echo_packet
-char init_packet[BUFF_SIZE];
-char echo_packet[BUFF_SIZE];
+EchoPacket init_packet, echo_packet;
+init_packet.type = ECHO;
+init_packet.seq = sequence;
 
 // server socket address
 struct sockaddr_in server_addr;
@@ -289,19 +308,12 @@ struct timeval timeout;
 struct timeval start_time;
 struct timeval last_time;
 
-// send filename to rcv
-sendto(sk, (char*)&init_packet, sizeof(BUFF_SIZE), 0,
+// send init packet to rcv
+sendto(sk, (EchoPacket *)&init_packet, sizeof(init_packet), 0,
 (struct sockaddr*)&echo_pac_addr, sizeof(echo_pac_addr));
 // record starting time
 gettimeofday(&start_time, NULL);
 gettimeofday(&last_time, NULL);
-
-printf("Try to establish connection with (%d.%d.%d.%d)\n",
-                 (htonl(echo_pac_addr.sin_addr.s_addr) & 0xff000000) >> 24,
-                 (htonl(echo_pac_addr.sin_addr.s_addr) & 0x00ff0000) >> 16,
-                 (htonl(echo_pac_addr.sin_addr.s_addr) & 0x0000ff00) >> 8,
-                 (htonl(echo_pac_addr.sin_addr.s_addr) & 0x000000ff));
-
 
 for (;;) {
      read_mask = mask;
@@ -320,14 +332,14 @@ for (;;) {
             gettimeofday(&current_time, NULL);
             struct timeval diff_time = diffTime(current_time, last_time);
             double msec = diff_time.tv_sec * 1000 + ((double) diff_time.tv_usec) / 1000;
-            printf("Report: RTT of a UDP packet is %f ms\n", msec);
+            sprintf(out, "Report: RTT of a UDP packet is %f ms with sequence number %d\n", msec, echo_packet.seq);
             last_time = current_time;
 
-            return msec; // terminate after report
+            return out; // terminate after report
         }
     } else {
-        printf("Haven't heard response for over %d seconds, timeout!\n", TIMEOUT_SEC);
-        fflush(0);
+        sprintf(out, "Haven't heard response for over %d seconds, timeout!\n", TIMEOUT_SEC);
+        return out;
     }
 }
 return 0;

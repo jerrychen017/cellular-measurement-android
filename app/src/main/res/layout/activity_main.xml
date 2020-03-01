@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.432" />
+        app:layout_constraintVertical_bias="0.394" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/interarrival_button"
@@ -26,10 +26,10 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.819"
+        app:layout_constraintHorizontal_bias="0.873"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.842"
+        app:layout_constraintVertical_bias="0.878"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
     <EditText
@@ -62,8 +62,8 @@
 
     <EditText
         android:id="@+id/output"
-        android:layout_width="323dp"
-        android:layout_height="124dp"
+        android:layout_width="333dp"
+        android:layout_height="246dp"
         android:duplicateParentState="false"
         android:editable="false"
         android:ems="10"
@@ -71,10 +71,10 @@
         android:scrollHorizontally="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.397"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.599" />
+        app:layout_constraintVertical_bias="0.663" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/config_button"
@@ -96,10 +96,10 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
+        app:layout_constraintHorizontal_bias="0.098"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.842"
+        app:layout_constraintVertical_bias="0.878"
         app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
