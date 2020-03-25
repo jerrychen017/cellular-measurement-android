@@ -1,4 +1,37 @@
 <resources>
-    <string name="app_name">UDP_Tools</string>
+    <string name="app_name">Cellular Measurements</string>
     <string name="send">SEND</string>
+
+    <string name="title_activity_interactive">interactive</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="ip">IP</string>
+    <string name="_128_220_221_21">128.220.221.21</string>
+    <string name="speed_mbps">Speed (Mbps)</string>
+    <string name="port">Port</string>
+    <string name="_4579">4579</string>
+    <string name="port_number">port number</string>
+    <string name="_1">1</string>
+    <string name="ip_address">ip address</string>
+    <string name="sending_rate">sending rate</string>
+    <string name="save">Save</string>
+    <string name="echo">Echo</string>
+    <string name="bandwidth_measurement">Bandwidth Measurement</string>
+    <string name="interactive">Interactive</string>
+    <string name="configuration">Configuration</string>
+    <string name="program_output">Program output</string>
+    <string name="error_message_field">Error message field</string>
+    <string name="generate_data">Generate Data</string>
+    <string name="max_speed_mbps">Max Speed (Mbps)</string>
+    <string name="_10">10</string>
+    <string name="_0_1">0.1</string>
+    <string name="min_speed_mbps">Min Speed (Mbps)</string>
+    <string name="echo_timeout_s">Echo Timeout (s)</string>
+    <string name="_5">5</string>
+    <string name="interval_size">Interval Size</string>
+    <string name="_10">10</string>
+    <string name="_100">100</string>
+    <string name="_2">2</string>
+    <string name="burst_factor">Burst Factor</string>
+    <string name="burst_size">Burst Size</string>
 </resources>
