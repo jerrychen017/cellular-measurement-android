@@ -5,6 +5,7 @@ extern "C" {
 #include "old/echo_client.h"
 #include "bandwidth_measurement/data_generator.h"
 #include "bandwidth_measurement/controller.h"
+#include "logger.h"
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -13,7 +14,6 @@ Java_com_example_udp_1tools_MainActivity_interarrivalFromJNI(
         jobject /* this */,
         jstring ip,
         jint port) {
-//    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
@@ -79,6 +79,7 @@ Java_com_example_udp_1tools_MainActivity_echoFromJNI(
         jint seq) {
 //    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
+    start_logger("echo"); // starting logger
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     // convert jint to int

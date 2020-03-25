@@ -29,7 +29,6 @@
     <string name="echo_timeout_s">Echo Timeout (s)</string>
     <string name="_5">5</string>
     <string name="interval_size">Interval Size</string>
-    <string name="_10">10</string>
     <string name="_100">100</string>
     <string name="_2">2</string>
     <string name="burst_factor">Burst Factor</string>

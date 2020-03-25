@@ -311,6 +311,7 @@ struct timeval last_time;
 // send init packet to rcv
 sendto(sk, (EchoPacket *)&init_packet, sizeof(init_packet), 0,
 (struct sockaddr*)&echo_pac_addr, sizeof(echo_pac_addr));
+printf("echo packet is sent");
 // record starting time
 gettimeofday(&start_time, NULL);
 gettimeofday(&last_time, NULL);
