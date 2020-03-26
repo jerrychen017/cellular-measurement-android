@@ -5,12 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
@@ -56,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
             messageField.setText("Port is already bound or binding failed!");
         }
 
-        // initialize EGL
-        EGL10 egl = (EGL10) EGLContext.getEGL();
-        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-        boolean ret = egl.eglInitialize(display, null);
 
-        if (!ret) {
-            System.out.println("EGL init error: " + egl.eglGetError());
-        }
+//        // initialize EGL
+//        EGL10 egl = (EGL10) EGLContext.getEGL();
+//        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+//        boolean ret = egl.eglInitialize(display, null);
+//
+//        if (!ret) {
+//            System.out.println("EGL init error: " + egl.eglGetError());
+//        }
 
 
         // go to InteractiveActivity when interactive button is clicked
@@ -99,14 +105,14 @@ public class MainActivity extends AppCompatActivity {
                         String ipStr = ipAddress.getText().toString();
                         int portInt = Integer.parseInt(port.getText().toString());
 
-                        // initialize EGL
-                        EGL10 egl = (EGL10) EGLContext.getEGL();
-                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-                        boolean ret = egl.eglInitialize(display, null);
+//                        // initialize EGL
+//                        EGL10 egl = (EGL10) EGLContext.getEGL();
+//                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+//                        boolean ret = egl.eglInitialize(display, null);
 
-                        if (!ret) {
-                            System.out.println("EGL init error: " + egl.eglGetError());
-                        }
+//                        if (!ret) {
+//                            System.out.println("EGL init error: " + egl.eglGetError());
+//                        }
                         System.out.println("reached here");
                         bandwidthFromJNI(ipStr, portInt);
 
@@ -186,4 +192,5 @@ public class MainActivity extends AppCompatActivity {
     public native int bindFromJNI(String ip, int port);
 
     public native String echoFromJNI(String ip, int port, int seq);
+
 }

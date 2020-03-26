@@ -5,8 +5,11 @@ extern "C" {
 #include "old/echo_client.h"
 #include "bandwidth_measurement/data_generator.h"
 #include "bandwidth_measurement/controller.h"
+#include "interactive/interactive_client.h"
 #include "logger.h"
 }
+
+extern "C" char * stdout_buffer;
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_udp_1tools_MainActivity_interarrivalFromJNI(
@@ -109,3 +112,73 @@ Java_com_example_udp_1tools_InteractiveView_echoFromJNI(
     return result;
 }
 
+
+/**
+    * sends an interactive packet with coordinate x and y
+    * @return sequence number of the packet
+    */
+extern "C" JNIEXPORT jint JNICALL
+Java_com_example_udp_1tools_InteractiveView_sendInteractivePacket(
+        JNIEnv *env,
+        jobject /* this */,
+        int seq_num,
+        float x,
+        float y) {
+
+    int ret = send_interactive_packet(seq_num, x, y);
+    return ret;
+}
+
+/**
+ *
+ * @param sequence_num the sequence number of the packet to be received
+ * @return an array of [x_coor, y_coor, sequence_num]
+ */
+extern "C" JNIEXPORT jfloatArray JNICALL
+Java_com_example_udp_1tools_InteractiveView_receiveInteractivePacket(
+        JNIEnv *env,
+        jobject /* this */) {
+    jfloatArray result;
+    result = env->NewFloatArray(3);
+    if (result == NULL) {
+        return NULL;
+    }
+    float * coord = receive_interactive_packet();
+    env->SetFloatArrayRegion(result, 0, 3, coord);
+    free(coord);
+    return result;
+}
+
+extern "C" JNIEXPORT jfloatArray JNICALL
+Java_com_example_udp_1tools_InteractiveView_sendAndReceiveInteractivePacket(
+        JNIEnv *env,
+        jobject /* this */,
+        int sequence_num,
+        float x,
+        float y) {
+    jfloatArray result;
+    result = env->NewFloatArray(2);
+    if (result == NULL) {
+        return NULL;
+    }
+    float * coord = send_and_receive_interactive_packet(sequence_num, x, y);
+//    printf("float coord x is %f", coord[0]);
+    env->SetFloatArrayRegion(result, 0, 2, coord);
+    free(coord);
+    return result;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_InteractiveView_initSocket(
+        JNIEnv *env,
+        jobject /* this */,
+        jstring address,
+        jint port) {
+    // convert jstring ip address to string
+    jboolean isCopy;
+    std::string address_c = env->GetStringUTFChars(address, &isCopy);
+    // convert jint to int
+    int port_c = (int) port;
+    init_socket(address_c.c_str(), port_c);
+    return;
+}

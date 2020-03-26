@@ -13,7 +13,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class InteractiveActivity extends AppCompatActivity {
     static int counter;
+    static int num_dropped;
     static TextView counterView;
+    static TextView numDroppedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,13 @@ public class InteractiveActivity extends AppCompatActivity {
             }
         });
         counterView =  findViewById(R.id.counter_view);
+        numDroppedView = findViewById(R.id.num_dropped_view);
     }
 
-    public static void setCounter(int n) {
-        counter = n;
+    public static void setCounter(int num_count, int num_dropped_packet) {
+        counter = num_count;
+        num_dropped = num_dropped_packet;
         counterView.setText("Counter: " + counter);
+        numDroppedView.setText("Num Dropped: " + num_dropped);
     }
 }

@@ -3,12 +3,14 @@
 //
 
 #include "logger.h"
+
 static int pfd[2];
 static pthread_t thr;
 static const char *tag = "myapp";
 
 int start_logger(const char *app_name)
 {
+
     tag = app_name;
 
     /* make stdout line-buffered and stderr unbuffered */
@@ -24,6 +26,7 @@ int start_logger(const char *app_name)
     if(pthread_create(&thr, 0, thread_func, 0) == -1)
         return -1;
     pthread_detach(thr);
+
     return 0;
 }
 

@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/num_dropped_view"
+        android:layout_width="190dp"
+        android:layout_height="36dp"
+        android:text="Numer of dropped packets"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.795"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.978" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/goback_button"
         android:layout_width="wrap_content"
@@ -44,6 +56,6 @@
         app:layout_constraintHorizontal_bias="0.66"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.922" />
+        app:layout_constraintVertical_bias="0.904" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

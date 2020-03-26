@@ -23,6 +23,8 @@ add_library( # Sets the name of the library.
         bandwidth_measurement/data_generator.c
         bandwidth_measurement/controller.c
         bandwidth_measurement/bandwith_utils.c
+        interactive/interactive_client.c
+#        interactive/interactive_utils.c
         logger.c
         )
 

@@ -21,8 +21,8 @@
 
 #define PORT 9008
 #define BUFF_SIZE 1000
-#define TIMEOUT_SEC 5
-#define TIMEOUT_USEC 0
+#define TIMEOUT_SEC 1
+#define TIMEOUT_USEC 500000 // 500ms
 #define PACKET_SIZE 1400
 #define NUM_SEND 10
 

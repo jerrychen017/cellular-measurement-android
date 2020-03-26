@@ -8,8 +8,9 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <malloc.h>
+#include <string.h>
 #include "android/log.h"
-
 
 int start_logger(const char *app_name);
 
