@@ -1,0 +1,3 @@
+[submodule "app/src/main/cpp/cellular-measurement"]
+	path = app/src/main/cpp/cellular-measurement
+	url = https://github.com/jerrychen017/cellular-measurement.git
