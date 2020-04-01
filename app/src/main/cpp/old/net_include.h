@@ -1,3 +1,5 @@
+#ifndef INTERACTIVE_NET_INCLUDE_H
+#define INTERACTIVE_NET_INCLUDE_H
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -50,4 +52,8 @@ typedef struct ReportPacket {
 typedef struct EchoPacket {
     int type;
     int seq;
+    float x;
+    float y;
 } EchoPacket;
+
+#endif
