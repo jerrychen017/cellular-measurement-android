@@ -24,8 +24,8 @@ add_library( # Sets the name of the library.
         cellular-measurement/bandwidth_measurement/controller.c
         cellular-measurement/bandwidth_measurement/bandwidth_utils.c
         cellular-measurement/bandwidth_measurement/sendto_dbg.c
-        interactive/interactive_client.c
-#        interactive/interactive_utils.c
+        cellular-measurement/interactive_server/interactive_client.c
+
         logger.c
         )
 
