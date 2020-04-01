@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <float.h>
+#include <math.h>
 
 #include <errno.h>
 
@@ -31,13 +32,14 @@
 #define INTERVAL_SIZE 100 // one burst per INTERVAL_SIZE packets, should make this a multiple of BURST_SIZE
 #define MIN_SPEED 0.1   // 100 Kbps
 #define MAX_SPEED 10 // 10 Mbps
+#define START_SPEED 1.0 // 1.0 Mbps
 
 #define SOCK_PATH "/tmp/unix_socket"
 
 enum NetworkPacketType
 {
     NETWORK_DATA,
-    NETWORK_PROBE,  // data packet that is sent at a higher rate to probe for bandwidth
+    NETWORK_BURST,  // data packet that is sent at a higher rate to probe for bandwidth
     NETWORK_REPORT,
 };
 
@@ -50,7 +52,8 @@ enum LocalPacketType
 typedef struct typed_packet_
 {
     int type;
-    char data[PACKET_SIZE - sizeof(int)];
+    double rate;
+    char data[PACKET_SIZE - sizeof(int)- sizeof(double)];
 } typed_packet;
 
 typedef struct data_header_
@@ -65,5 +68,4 @@ typedef struct data_packet_
     data_header hdr;
     char data[PACKET_SIZE - sizeof(data_header)];
 } data_packet;
-
 #endif

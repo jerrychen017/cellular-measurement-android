@@ -1,14 +1,14 @@
 #include "net_include.h"
-#include "bandwith_utils.h"
+#include "bandwidth_utils.h"
 
 /* 
- * Returns interval to send packets of size PACKET_SZIE
+ * Returns interval to send packets of size PACKET_SIZE
  * to acheive flow of speed Mbps (megabits per seconds)
  */
 struct timeval speed_to_interval(double speed)
 {
     struct timeval ret;
-    long usec = 1000000l * PACKET_SIZE * 8 / (speed * 1024 * 1024);
+    long usec = 1000000l * PACKET_SIZE * 8l / (speed * 1024 * 1024); 
     
     ret.tv_sec = usec / 1000000;
     ret.tv_usec = usec % 1000000;
@@ -45,4 +45,10 @@ struct timeval diffTime(struct timeval left, struct timeval right)
         diff.tv_sec = diff.tv_usec = 0;
     }
     return diff;
+}
+
+int gtTime(struct timeval left, struct timeval right) 
+{
+    return (left.tv_sec > right.tv_sec) ||
+        (left.tv_sec == right.tv_sec && left.tv_usec > right.tv_usec);
 }

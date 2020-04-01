@@ -42,7 +42,7 @@ Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
     // convert jint to int
     int port_c = (int) port;
 //    double msec = echo_client_start(port_c, address_c.c_str(), false);
-    int result = start_controller(address_c.c_str(), port_c);
+    int result = start_controller(address_c.c_str(), port_c, true);
 //    std::string output = "RTT is " + std::to_string(msec) + " ms";
     return result;
 }
@@ -52,7 +52,7 @@ Java_com_example_udp_1tools_MainActivity_generateDataFromJNI(
         JNIEnv *env,
         jobject /* this */
         ) {
-    start_generator();
+    start_generator(true);
     return;
 }
 
