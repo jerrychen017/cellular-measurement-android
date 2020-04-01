@@ -18,12 +18,13 @@ int start_generator()
     FD_SET(s, &mask);
 
     int seq = 0;
-    bool start = false;
+    bool start = false; // change to true for testing
     typed_packet pkt;
     char buffer[DATA_SIZE];
     double speed = 1.0;
 
     // Timeout before start is TIMEOUT_SEC
+    printf("data_generator: start sending pkts\n");
 
     for (;;)
     {
@@ -59,12 +60,14 @@ int start_generator()
                     printf("received LOCAL_CONTROL message\n");
                     speed = *((double *) pkt.data);
                     if (speed <= 0) {
-                        perror("negative speed\n");
-                        exit(1);
+                        printf("negative speed\n");
+//                        exit(1);
+                        return 1;
                     }
                     if (speed > MAX_SPEED) {
-                        perror("exceed max speed\n");
-                        exit(1);
+                        printf("exceed max speed\n");
+//                        exit(1);
+                        return 1;
                     }
                 }
             }
@@ -78,6 +81,7 @@ int start_generator()
             else
             {
                 send(s, buffer, DATA_SIZE , 0);
+//                printf("data_generator: sent data pkt to controller\n");
                 seq++;
             }
         }
@@ -95,23 +99,35 @@ int setup_socket()
 
     struct sockaddr_un controller;
 
+
+
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
     {
-        perror("socket error\n");
+        perror("data_generator: socket error\n");
         exit(1);
     }
 
-    printf("Trying to connect...\n");
+    printf("data_generator: Trying to connect...\n");
 
+    memset(&controller, 0, sizeof(controller)); // fix
     controller.sun_family = AF_UNIX;
-    strcpy(controller.sun_path, SOCK_PATH);
-    len = strlen(controller.sun_path) + sizeof(controller.sun_family);
+    // fixing socket error
+    const char name[] = "\0my.local.socket.address";
+// size-1 because abstract socket names are *not* null terminated
+    memcpy(controller.sun_path, name, sizeof(name) - 1);
+//    strcpy(controller.sun_path, SOCK_PATH);
+//    len = strlen(controller.sun_path) + sizeof(controller.sun_family);
+    len = strlen(controller.sun_path) + sizeof(name); // fix
+    controller.sun_path[0] = 0;
+
+
     if (connect(s, (struct sockaddr *)&controller, len) == -1)
     {
-        perror("connect error\n");
-        exit(1);
+        printf("data_generator: connect error in setup_socket()\n");
+//        exit(1);
+        return 1;
     }
 
-    printf("Connected.\n");
+    printf("data_generator: Connected.\n");
     return s;
 }

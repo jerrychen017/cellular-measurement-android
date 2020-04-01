@@ -36,6 +36,7 @@ Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
         jint port) {
 //    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
+    start_logger("controller"); // starting logger
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     // convert jint to int
@@ -82,7 +83,7 @@ Java_com_example_udp_1tools_MainActivity_echoFromJNI(
         jint seq) {
 //    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
-    start_logger("echo"); // starting logger
+//    start_logger("echo"); // starting logger
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     // convert jint to int

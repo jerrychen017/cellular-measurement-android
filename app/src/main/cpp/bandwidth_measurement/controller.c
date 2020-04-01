@@ -33,6 +33,7 @@ void startup(int s_server, int s_data, struct sockaddr_in send_addr)
     typed_packet pkt;
     pkt.type = LOCAL_START;
     send(s_data, &pkt, sizeof(pkt.type), 0);
+    printf("control: sent LOCAL_START");
 }
 
 /* Main event loop */
@@ -119,10 +120,11 @@ void control(int s_server, int s_data, struct sockaddr_in send_addr)
                     printf("data stream ended, exiting...\n");
                     close(s_data);
                     close(s_server);
-                    exit(0);
+//                    exit(0);
+                    return;
                 }
                 if(recv_pkt.hdr.type == NETWORK_REPORT){
-
+                    printf("controller: received network report packet \n");
                 }
             }
         } else {
@@ -159,21 +161,35 @@ int setup_data_socket()
 
     struct sockaddr_un addr1, addr2;
 
+
+
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
     {
-        perror("socket error\n");
+        printf("socket error\n");
         exit(1);
     }
 
     printf("Trying to connect...\n");
 
+    memset(&addr1, 0, sizeof(addr1)); // fix
     addr1.sun_family = AF_UNIX;
-    strcpy(addr1.sun_path, SOCK_PATH);
-    len = strlen(addr1.sun_path) + sizeof(addr1.sun_family);
+
+    // fixing socket error
+    const char name[] = "\0my.local.socket.address";
+// size-1 because abstract socket names are *not* null terminated
+    memcpy(addr1.sun_path, name, sizeof(name) - 1);
+
+//    strcpy(addr1.sun_path, SOCK_PATH);
+//    len = strlen(addr1.sun_path) + sizeof(addr1.sun_family);
+    len = strlen(addr1.sun_path) + sizeof(name); // fix
+
+    addr1.sun_path[0] = 0;
+
     unlink(addr1.sun_path);
     if (bind(s, (struct sockaddr *)&addr1, len) == -1) {
-        perror("bind");
+        perror("bind error in setup_data_socket");
         exit(1);
+        return 1;
     }
 
     if (listen(s, 5) == -1) {
@@ -181,10 +197,17 @@ int setup_data_socket()
         exit(1);
     }
 
+    // fixing socket error
+    const char name2[] = "\0my2.local.socket.address";
+// size-1 because abstract socket names are *not* null terminated
+    memcpy(addr2.sun_path, name2, sizeof(name2) - 1);
+
     printf("Waiting for a connection...\n");
-    len2 = sizeof(addr1);
+//    len2 = sizeof(addr1);
+    len2 = strlen(addr2.sun_path) + sizeof(name); // fix
+    addr2.sun_path[0] = 0;
     if ((s2 = accept(s, (struct sockaddr *)&addr2, &len2)) == -1) {
-        perror("accept");
+        printf("controller: accept error\n");
         exit(1);
     }
 
@@ -199,7 +222,7 @@ int setup_server_socket(int port)
 
     int s_recv = socket(AF_INET, SOCK_DGRAM, 0);  /* socket for receiving (udp) */
     if (s_recv < 0) {
-        perror("socket recv error\n");
+        printf("socket recv error\n");
         exit(1);
     }
 
@@ -207,10 +230,10 @@ int setup_server_socket(int port)
     name.sin_addr.s_addr = INADDR_ANY;
     name.sin_port = htons(port);
 
-    if (bind( s_recv, (struct sockaddr *)&name, sizeof(name) ) < 0 ) {
-        perror("bind error\n");
-        exit(1);
-    }
+//    if (bind( s_recv, (struct sockaddr *)&name, sizeof(name) ) < 0 ) {
+//        printf("bind error\n");
+//        exit(1);
+//    }
 
     return s_recv;
 }

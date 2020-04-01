@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
@@ -97,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+//                        // initialize EGL
+//                        EGL10 egl = (EGL10) EGLContext.getEGL();
+//                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+//                        boolean ret = egl.eglInitialize(display, null);
+//
+//                        if (!ret) {
+//                            System.out.println("EGL init error: " + egl.eglGetError());
+//                        }
 //                        TextView output = findViewById(R.id.output);
                         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View vi = inflater.inflate(R.layout.activity_configuration, null);
@@ -130,21 +139,32 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                TextView messageField = findViewById(R.id.message_field);
 //                messageField.setText("Data stream has been generated!");
+
+
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        // initialize EGL
-                        EGL10 egl = (EGL10) EGLContext.getEGL();
-                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-                        boolean ret = egl.eglInitialize(display, null);
-
-                        if (!ret) {
-                            System.out.println("EGL init error: " + egl.eglGetError());
-                        }
+//                        // initialize EGL
+//                        EGL10 egl = (EGL10) EGLContext.getEGL();
+//                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+//                        boolean ret = egl.eglInitialize(display, null);
+//
+//                        if (!ret) {
+//                            System.out.println("EGL init error: " + egl.eglGetError());
+//                        }
                         generateDataFromJNI();
                         System.out.println("data stream has been generated!");
                     }
                 }).start();
+
+//                AsyncTask.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        //TODO your background code
+//                    }
+//                });
             }
         });
 
