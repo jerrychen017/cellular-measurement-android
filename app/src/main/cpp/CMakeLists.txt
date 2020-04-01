@@ -20,10 +20,10 @@ add_library( # Sets the name of the library.
         native-lib.cpp
         old/echo_client.c
 #        old/old_utils.c
-        bandwidth_measurement/data_generator.c
-        bandwidth_measurement/controller.c
-        bandwidth_measurement/bandwidth_utils.c
-        bandwidth_measurement/sendto_dbg.c
+        cellular-measurement/bandwidth_measurement/data_generator.c
+        cellular-measurement/bandwidth_measurement/controller.c
+        cellular-measurement/bandwidth_measurement/bandwidth_utils.c
+        cellular-measurement/bandwidth_measurement/sendto_dbg.c
         interactive/interactive_client.c
 #        interactive/interactive_utils.c
         logger.c

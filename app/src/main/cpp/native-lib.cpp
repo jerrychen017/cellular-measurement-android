@@ -3,8 +3,8 @@
 
 extern "C" {
 #include "old/echo_client.h"
-#include "bandwidth_measurement/data_generator.h"
-#include "bandwidth_measurement/controller.h"
+#include "cellular-measurement/bandwidth_measurement/data_generator.h"
+#include "cellular-measurement/bandwidth_measurement/controller.h"
 #include "interactive/interactive_client.h"
 #include "logger.h"
 }
