@@ -4,7 +4,7 @@
 
 #ifndef UDP_TOOLS_INTERACTIVE_CLIENT_H
 #define UDP_TOOLS_ECHO_CLIENT_H
-#include "net_include.h"
+#include "../cellular-measurement/interactive_server/include/net_include.h"
 #include "old_utils.h"
 
 char * echo_client(const char* address, int port, int seq);

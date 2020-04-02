@@ -30,12 +30,13 @@ public class InteractiveView extends View {
     private int pathIndex = 0;
     private ArrayList<Path> pathLists = new ArrayList<>();
     private ArrayList<Paint> paintLists = new ArrayList<>();
-    private float startX = 0F;
-    private float startY = 0F;
     private int counter = 0;
     private int last_received_sequence_num = -1;
     private int last_sent_sequence_num = -1;
     private int num_dropped_packet = 0;
+
+    private float xcoord;
+    private float ycoord;
 
     public InteractiveView(Context context) {
         super(context);
@@ -59,24 +60,27 @@ public class InteractiveView extends View {
         pathIndex++;
 
         // initialize a socket for sending and receiving interactive packets
-        initSocket("128.220.221.21", 4579);
+        initInteractive("128.220.221.21", 4579, "test-name", 7);
 
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    float[] coord = receiveInteractivePacket();
-                    int received_seq_num = Math.round(coord[2]);
+                    InteractivePacket pkt = receiveInteractivePacket();
+                    System.out.println("received an interactive packet");
+                    int received_seq_num = pkt.seq;
                     if (last_received_sequence_num > received_seq_num) { // received packet was delayed
                         Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
                     } else {
                         Path path = pathLists.get(pathIndex - 1);
-                        path.lineTo(coord[0], coord[1]);
+                        path.lineTo(pkt.x, pkt.y);
+                        xcoord = pkt.x;
+                        ycoord = pkt.y;
                         counter++;
                         num_dropped_packet += (received_seq_num - last_received_sequence_num - 1);
                         last_received_sequence_num = received_seq_num;
-                        Log.d("interactive", "Interactive packet received with coord x: " + coord[0] + " y: " + coord[1] + " sequence_num: " + received_seq_num);
+                        Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
                     }
                     InteractiveActivity.setCounter(counter, num_dropped_packet);
                 }
@@ -95,13 +99,17 @@ public class InteractiveView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.CYAN);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLUE);
+        canvas.drawCircle(xcoord, ycoord, 100,paint);
 
-        for (int index = 0; index < pathIndex; index++) {
-            Path path = pathLists.get(index);
-            Paint paint = paintLists.get(index);
-
-            canvas.drawPath(path, paint);
-        }
+//        for (int index = 0; index < pathIndex; index++) {
+//            Path path = pathLists.get(index);
+//            Paint paint = paintLists.get(index);
+//
+//            canvas.drawPath(path, paint);
+//            canvas.drawPath(path, paint);
+//        }
     }
 
     @Override
@@ -116,72 +124,6 @@ public class InteractiveView extends View {
                 if (ret > 0) { // error occurred
                     Log.d("interactive", "Error occurred when sending interactive packets");
                 }
-
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        last_sent_sequence_num++;
-////                        int ret = sendInteractivePacket(last_sent_sequence_num, tempX, tempY);
-////                        if (ret > 0) { // error occurred
-////                            Log.d("interactive","Error occurred when sending interactive packets");
-////                        }
-//                        int sequence_num = last_sent_sequence_num;
-//                        float[] coord = sendAndReceiveInteractivePacket(sequence_num, tempX, tempY);
-//                        if (coord[0] == -1 && coord[1] == -1) { // timeout occurred!
-//                            Log.e("interactive","Timeout occurred when receiving interactive packets");
-//                            num_dropped_packet++;
-//                            InteractiveActivity.setCounter(counter, num_dropped_packet);
-//                            return;
-//                        }
-//
-//                        if (coord[0] == -2 && coord[1] == -2) { // server name error occurred!
-//                            Log.e("interactive","Server name error occurred when sending interactive packets");
-////                            num_dropped_packet++;
-////                            InteractiveActivity.setCounter(counter, num_dropped_packet);
-//                            return;
-//                        }
-//                        if (coord[0] == -3 && coord[1] == -3) { // socket error occurred!
-//                            Log.e("interactive","Socket error occurred when sending interactive packets");
-////                            num_dropped_packet++;
-////                            InteractiveActivity.setCounter(counter, num_dropped_packet);
-//                            return;
-//                        }
-//                        if (coord[0] == -4 && coord[1] == -4) { // socket error occurred!
-//                            Log.e("interactive","Not my packet error occurred when sending interactive packets");
-//                            num_dropped_packet++;
-//                            InteractiveActivity.setCounter(counter, num_dropped_packet);
-//                            return;
-//                        }
-//                        last_received_sequence_num = sequence_num;
-//
-//                        if (sequence_num < last_received_sequence_num) { // packet delayed.
-//                            // ignore this packet
-//                            num_dropped_packet++;
-//                            Log.d("interactive","Interactive packet dropped");
-//                            InteractiveActivity.setCounter(counter, num_dropped_packet);
-//                        } else {
-//                            last_received_sequence_num = sequence_num;
-//
-//                            Path path = pathLists.get(pathIndex - 1);
-//                            path.lineTo(coord[0], coord[1]);
-//                            counter++;
-//                            InteractiveActivity.setCounter(counter, num_dropped_packet);
-//                            Log.d("interactive","Interactive packet received with coord x: " + coord[0] + " y: " + coord[1]);
-//                        }
-//                    }
-//                }).start();
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                            echoFromJNI("128.220.221.21", 4579, counter);
-//                            Path path = pathLists.get(pathIndex - 1);
-//                            path.lineTo(tempX, tempY);
-//                            counter++;
-//                            InteractiveActivity.setCounter(counter);
-//
-//                    }
-//                }).start();
 
                 break;
             default:
@@ -204,12 +146,10 @@ public class InteractiveView extends View {
     /**
      * receives an interactive packet with a certain sequence number
      *
-     * @param sequence_num the sequence number of the packet to be received
-     * @return an array of [x_coor, y_coor]
+     * @return Interactive Packet
      */
-    public native float[] receiveInteractivePacket();
+    public native InteractivePacket receiveInteractivePacket();
 
-    public native float[] sendAndReceiveInteractivePacket(int seq_num, float x, float y);
 
-    public native void initSocket(String address, int port);
+    public native void initInteractive(String address, int port, String name, int id);
 }

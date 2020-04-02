@@ -1,5 +1,5 @@
-#ifndef INTERACTIVE_NET_INCLUDE_H
-#define INTERACTIVE_NET_INCLUDE_H
+#ifndef OLD_NET_INCLUDE_H
+#define OLD_NET_INCLUDE_H
 #include <stdbool.h>
 #include <stdio.h>
 

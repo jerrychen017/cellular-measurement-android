@@ -5,7 +5,7 @@ extern "C" {
 #include "old/echo_client.h"
 #include "cellular-measurement/bandwidth_measurement/data_generator.h"
 #include "cellular-measurement/bandwidth_measurement/controller.h"
-#include "interactive/interactive_client.h"
+#include "cellular-measurement/interactive_server/interactive_client.h"
 #include "logger.h"
 }
 
@@ -36,7 +36,7 @@ Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
         jint port) {
 //    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
-    start_logger("controller"); // starting logger
+//    start_logger("controller"); // starting logger
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     // convert jint to int
@@ -127,6 +127,7 @@ Java_com_example_udp_1tools_InteractiveView_sendInteractivePacket(
         float y) {
 
     int ret = send_interactive_packet(seq_num, x, y);
+
     return ret;
 }
 
@@ -135,51 +136,46 @@ Java_com_example_udp_1tools_InteractiveView_sendInteractivePacket(
  * @param sequence_num the sequence number of the packet to be received
  * @return an array of [x_coor, y_coor, sequence_num]
  */
-extern "C" JNIEXPORT jfloatArray JNICALL
+extern "C" JNIEXPORT jobject JNICALL
 Java_com_example_udp_1tools_InteractiveView_receiveInteractivePacket(
         JNIEnv *env,
         jobject /* this */) {
-    jfloatArray result;
-    result = env->NewFloatArray(3);
-    if (result == NULL) {
-        return NULL;
-    }
-    float * coord = receive_interactive_packet();
-    env->SetFloatArrayRegion(result, 0, 3, coord);
-    free(coord);
-    return result;
-}
+    EchoPacket echoPacket = receive_interactive_packet();
+    jobject echo_java_obj;
+    jclass interactive_pkt_class;
+    jmethodID constructor;
+    interactive_pkt_class = env->FindClass("com/example/udp_tools/InteractivePacket");
+    constructor = env->GetMethodID(interactive_pkt_class, "<init>", "(IFFILjava/lang/String;)V");
+    jvalue args[5];
+    args[0].i = echoPacket.seq;
+    args[1].f = echoPacket.x;
+    args[2].f = echoPacket.y;
+    args[3].i = echoPacket.id;
+    args[4].l = env->NewStringUTF(std::string(echoPacket.name).c_str());
 
-extern "C" JNIEXPORT jfloatArray JNICALL
-Java_com_example_udp_1tools_InteractiveView_sendAndReceiveInteractivePacket(
-        JNIEnv *env,
-        jobject /* this */,
-        int sequence_num,
-        float x,
-        float y) {
-    jfloatArray result;
-    result = env->NewFloatArray(2);
-    if (result == NULL) {
-        return NULL;
-    }
-    float * coord = send_and_receive_interactive_packet(sequence_num, x, y);
-//    printf("float coord x is %f", coord[0]);
-    env->SetFloatArrayRegion(result, 0, 2, coord);
-    free(coord);
-    return result;
+    echo_java_obj = env->NewObjectA(interactive_pkt_class, constructor, args);
+    return echo_java_obj;
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_example_udp_1tools_InteractiveView_initSocket(
+Java_com_example_udp_1tools_InteractiveView_initInteractive(
         JNIEnv *env,
         jobject /* this */,
         jstring address,
-        jint port) {
+        jint port,
+        jstring name,
+        jint id) {
+    start_logger("interactive"); // starting logger
     // convert jstring ip address to string
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(address, &isCopy);
     // convert jint to int
     int port_c = (int) port;
     init_socket(address_c.c_str(), port_c);
+
+    // send connect message to the server
+    std::string name_c = env->GetStringUTFChars(name, &isCopy);
+    int id_c = (int) id;
+    interactive_connect(id_c, name_c.c_str());
     return;
 }

@@ -1,4 +1,5 @@
-#include "net_include.h"
+//#include "net_include.h"
+#include "../cellular-measurement/interactive_server/include/net_include.h"
 #include "old_utils.h"
 struct timeval diffTime(struct timeval left, struct timeval right) {
     struct timeval diff;
