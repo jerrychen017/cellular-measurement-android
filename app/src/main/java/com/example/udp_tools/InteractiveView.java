@@ -105,13 +105,6 @@ public class InteractiveView extends View {
         }).start();
     }
 
-    private Paint createPaint() {
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10F);
-        return paint;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -121,7 +114,8 @@ public class InteractiveView extends View {
         canvas.drawCircle(xcoord, ycoord, 100,paint);
 
         for (InteractiveUser usr: users) {
-            canvas.drawCircle(usr.x, usr.y, 100,usr.paint);
+            canvas.drawCircle(usr.x, usr.y, 100,usr.circlePaint);
+            canvas.drawText(usr.name, usr.x, usr.y, usr.textPaint);
         }
     }
 
@@ -129,25 +123,12 @@ public class InteractiveView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
-                float y = event.getY();
-//                int result = echoFromJNI("128.220.221.21", 4579, 0);
+            case MotionEvent.ACTION_DOWN:
                 last_sent_sequence_num++;
-                int ret = sendInteractivePacket(last_sent_sequence_num, x, y);
+                int ret = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
                 if (ret > 0) { // error occurred
                     Log.d("interactive", "Error occurred when sending interactive packets");
                 }
-
-                break;
-            case MotionEvent.ACTION_DOWN:
-
-//                int result = echoFromJNI("128.220.221.21", 4579, 0);
-                last_sent_sequence_num++;
-                int ret1 = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
-                if (ret1 > 0) { // error occurred
-                    Log.d("interactive", "Error occurred when sending interactive packets");
-                }
-
                 break;
             default:
                 break;
