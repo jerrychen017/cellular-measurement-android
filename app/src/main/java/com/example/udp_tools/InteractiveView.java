@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A view class that's responsible for drawing interactions
@@ -33,8 +34,11 @@ public class InteractiveView extends View {
     private int last_sent_sequence_num = -1;
     private int num_dropped_packet = 0;
 
+    // my coordinates
     private float xcoord;
     private float ycoord;
+    private int myID;
+    private List<InteractiveUser> users = new ArrayList<>();
 
     public InteractiveView(Context context) {
         super(context);
@@ -55,8 +59,12 @@ public class InteractiveView extends View {
     private void init(AttributeSet attrs, int defStyle) {
 
         // initialize a socket for sending and receiving interactive packets
-        initInteractive("128.220.221.21", 4579, "test-name");
-
+        int id = initInteractive("128.220.221.21", 4579, "test-name");
+        if (id < 0) {
+            System.err.println("Error occurred when connecting to user");
+        } else {
+            myID = id;
+        }
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
             @Override
@@ -65,17 +73,32 @@ public class InteractiveView extends View {
                     InteractivePacket pkt = receiveInteractivePacket();
                     System.out.println("received an interactive packet");
                     int received_seq_num = pkt.seq;
-                    if (last_received_sequence_num > received_seq_num) { // received packet was delayed
-                        Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
-                    } else {
-                        xcoord = pkt.x;
-                        ycoord = pkt.y;
-                        counter++;
-                        num_dropped_packet += (received_seq_num - last_received_sequence_num - 1);
-                        last_received_sequence_num = received_seq_num;
-                        Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
+                    int received_id = pkt.id;
+                    if (received_id == myID) {
+                        if (last_received_sequence_num > received_seq_num) { // received packet was delayed
+                            Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
+                        } else {
+                            xcoord = pkt.x;
+                            ycoord = pkt.y;
+                            counter++;
+                            num_dropped_packet += (received_seq_num - last_received_sequence_num - 1);
+                            last_received_sequence_num = received_seq_num;
+                            Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
+                        }
+                        InteractiveActivity.setCounter(counter, num_dropped_packet);
+                    } else { // other user
+                        boolean userFound = false;
+                        for (InteractiveUser usr : users) {
+                            if (usr.id == received_id) {
+                                userFound = true;
+                                usr.setX(pkt.x);
+                                usr.setY(pkt.y);
+                            }
+                        }
+                        if (!userFound) {
+                            users.add(new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y));
+                        }
                     }
-                    InteractiveActivity.setCounter(counter, num_dropped_packet);
                 }
             }
         }).start();
@@ -96,6 +119,9 @@ public class InteractiveView extends View {
         paint.setColor(Color.BLUE);
         canvas.drawCircle(xcoord, ycoord, 100,paint);
 
+        for (InteractiveUser usr: users) {
+            canvas.drawCircle(usr.x, usr.y, 100,usr.paint);
+        }
     }
 
     @Override
