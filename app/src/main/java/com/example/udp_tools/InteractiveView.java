@@ -98,6 +98,7 @@ public class InteractiveView extends View {
                         if (!userFound) {
                             users.add(new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y));
                         }
+                        invalidate();
                     }
                 }
             }
