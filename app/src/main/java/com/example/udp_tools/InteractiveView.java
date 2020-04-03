@@ -19,7 +19,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * TODO: document your custom view class.
+ * A view class that's responsible for drawing interactions
  */
 public class InteractiveView extends View {
     // Used to load the 'native-lib' library on application startup.
@@ -60,7 +60,7 @@ public class InteractiveView extends View {
         pathIndex++;
 
         // initialize a socket for sending and receiving interactive packets
-        initInteractive("128.220.221.21", 4579, "test-name", 7);
+        initInteractive("128.220.221.21", 4579, "test-name");
 
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
@@ -126,6 +126,16 @@ public class InteractiveView extends View {
                 }
 
                 break;
+            case MotionEvent.ACTION_DOWN:
+
+//                int result = echoFromJNI("128.220.221.21", 4579, 0);
+                last_sent_sequence_num++;
+                int ret1 = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
+                if (ret1 > 0) { // error occurred
+                    Log.d("interactive", "Error occurred when sending interactive packets");
+                }
+
+                break;
             default:
                 break;
         }
@@ -151,5 +161,5 @@ public class InteractiveView extends View {
     public native InteractivePacket receiveInteractivePacket();
 
 
-    public native void initInteractive(String address, int port, String name, int id);
+    public native int initInteractive(String address, int port, String name);
 }

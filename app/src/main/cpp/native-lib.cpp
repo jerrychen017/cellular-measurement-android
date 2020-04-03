@@ -64,14 +64,21 @@ Java_com_example_udp_1tools_MainActivity_bindFromJNI(
         jint port) {
 //    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
+//    jboolean isCopy;
+//    std::string address_c = env->GetStringUTFChars(ip, &isCopy);
+//    // convert jint to int
+//    int port_c = (int) port;
+//
+//    int status = client_bind(address_c.c_str(), port_c);
+
+    // convert jstring ip address to string
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     // convert jint to int
     int port_c = (int) port;
+    init_socket(address_c.c_str(), port_c);
 
-    int status = client_bind(address_c.c_str(), port_c);
-
-    return status;
+    return 0;
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -140,7 +147,7 @@ extern "C" JNIEXPORT jobject JNICALL
 Java_com_example_udp_1tools_InteractiveView_receiveInteractivePacket(
         JNIEnv *env,
         jobject /* this */) {
-    EchoPacket echoPacket = receive_interactive_packet();
+    InteractivePacket echoPacket = receive_interactive_packet();
     jobject echo_java_obj;
     jclass interactive_pkt_class;
     jmethodID constructor;
@@ -157,14 +164,13 @@ Java_com_example_udp_1tools_InteractiveView_receiveInteractivePacket(
     return echo_java_obj;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" JNIEXPORT jint JNICALL
 Java_com_example_udp_1tools_InteractiveView_initInteractive(
         JNIEnv *env,
         jobject /* this */,
         jstring address,
         jint port,
-        jstring name,
-        jint id) {
+        jstring name) {
     start_logger("interactive"); // starting logger
     // convert jstring ip address to string
     jboolean isCopy;
@@ -175,7 +181,6 @@ Java_com_example_udp_1tools_InteractiveView_initInteractive(
 
     // send connect message to the server
     std::string name_c = env->GetStringUTFChars(name, &isCopy);
-    int id_c = (int) id;
-    interactive_connect(id_c, name_c.c_str());
-    return;
+    int id = interactive_connect(name_c.c_str());
+    return id;
 }
