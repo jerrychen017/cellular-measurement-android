@@ -27,9 +27,7 @@ public class InteractiveView extends View {
         System.loadLibrary("native-lib");
     }
 
-    private int pathIndex = 0;
-    private ArrayList<Path> pathLists = new ArrayList<>();
-    private ArrayList<Paint> paintLists = new ArrayList<>();
+
     private int counter = 0;
     private int last_received_sequence_num = -1;
     private int last_sent_sequence_num = -1;
@@ -55,9 +53,6 @@ public class InteractiveView extends View {
 
 
     private void init(AttributeSet attrs, int defStyle) {
-        pathLists.add(new Path());
-        paintLists.add(createPaint());
-        pathIndex++;
 
         // initialize a socket for sending and receiving interactive packets
         initInteractive("128.220.221.21", 4579, "test-name");
@@ -73,8 +68,6 @@ public class InteractiveView extends View {
                     if (last_received_sequence_num > received_seq_num) { // received packet was delayed
                         Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
                     } else {
-                        Path path = pathLists.get(pathIndex - 1);
-                        path.lineTo(pkt.x, pkt.y);
                         xcoord = pkt.x;
                         ycoord = pkt.y;
                         counter++;
@@ -103,13 +96,6 @@ public class InteractiveView extends View {
         paint.setColor(Color.BLUE);
         canvas.drawCircle(xcoord, ycoord, 100,paint);
 
-//        for (int index = 0; index < pathIndex; index++) {
-//            Path path = pathLists.get(index);
-//            Paint paint = paintLists.get(index);
-//
-//            canvas.drawPath(path, paint);
-//            canvas.drawPath(path, paint);
-//        }
     }
 
     @Override
