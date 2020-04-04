@@ -33,4 +33,6 @@
     <string name="_2">2</string>
     <string name="burst_factor">Burst Factor</string>
     <string name="burst_size">Burst Size</string>
+    <string name="interactive_name">Interactive Name</string>
+    <string name="testname">TestName</string>
 </resources>

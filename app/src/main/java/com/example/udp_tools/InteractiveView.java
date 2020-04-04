@@ -1,20 +1,13 @@
 package com.example.udp_tools;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.drawable.Drawable;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +20,6 @@ public class InteractiveView extends View {
     static {
         System.loadLibrary("native-lib");
     }
-
 
     private int counter = 0;
     private int last_received_sequence_num = -1;
@@ -57,9 +49,8 @@ public class InteractiveView extends View {
 
 
     private void init(AttributeSet attrs, int defStyle) {
-
         // initialize a socket for sending and receiving interactive packets
-        int id = initInteractive("128.220.221.21", 4579, "test-name");
+        int id = initInteractive("128.220.221.21", 4579, MainActivity.getInteractiveName());
         if (id < 0) {
             System.err.println("Error occurred when connecting to user");
         } else {

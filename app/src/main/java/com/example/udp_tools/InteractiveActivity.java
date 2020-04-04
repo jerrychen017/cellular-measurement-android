@@ -2,10 +2,8 @@ package com.example.udp_tools;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +14,7 @@ public class InteractiveActivity extends AppCompatActivity {
     static int num_dropped;
     static TextView counterView;
     static TextView numDroppedView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +29,7 @@ public class InteractiveActivity extends AppCompatActivity {
                 startActivity(mainActivityIntent);
             }
         });
+
         counterView =  findViewById(R.id.counter_view);
         numDroppedView = findViewById(R.id.num_dropped_view);
     }
@@ -41,3 +41,5 @@ public class InteractiveActivity extends AppCompatActivity {
         numDroppedView.setText("Num Dropped: " + num_dropped);
     }
 }
+
+

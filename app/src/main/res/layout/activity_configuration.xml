@@ -7,6 +7,34 @@
     android:layout_height="match_parent"
     tools:context=".ConfigurationActivity">
 
+    <EditText
+        android:id="@+id/interactive_name"
+        android:layout_width="181dp"
+        android:layout_height="38dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/sending_rate"
+        android:inputType="textPersonName"
+        android:text="@string/testname"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.595"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.699" />
+
+    <TextView
+        android:id="@+id/interactive_name_label"
+        android:layout_width="73dp"
+        android:layout_height="37dp"
+        android:text="@string/interactive_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7" />
+
     <TextView
         android:id="@+id/max_speed_label"
         android:layout_width="73dp"

@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +30,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static int echoSequence = 0;
+    private static SharedPreferences pref;
+    private static Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pref = getSharedPreferences("cellular-measurement", MODE_PRIVATE);
+        editor = pref.edit();
+        // set a sample name as interactive name
+        editor.putString("interactive_name", "Sample Name");
+        editor.commit();
+
         setContentView(R.layout.activity_main);
         Button configButton = findViewById(R.id.config_button);
         Button bandwidthButton = findViewById(R.id.bandwidth_button);
@@ -190,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(RTT);
             }
         });
+    }
+
+    public static String getInteractiveName() {
+        return pref.getString("interactive_name", null);
     }
 
     /**
