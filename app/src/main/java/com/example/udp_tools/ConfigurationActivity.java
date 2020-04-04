@@ -30,8 +30,9 @@ public class ConfigurationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // save values to shared preferences
                 EditText interactiveName = findViewById(R.id.interactive_name);
-                editor.putString("interactive_name", interactiveName.getText().toString());
-                editor.commit();
+                MainActivity.getSharedPreferences().edit().putString("interactive_name", interactiveName.getText().toString());
+                System.out.println("interactive name is " + interactiveName.getText().toString());
+                MainActivity.getSharedPreferences().edit().commit();
 
                 Intent mainActivityIntent = new Intent(ConfigurationActivity.this, MainActivity.class);
                 startActivity(mainActivityIntent);

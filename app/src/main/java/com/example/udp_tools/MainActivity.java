@@ -39,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
         pref = getSharedPreferences("cellular-measurement", MODE_PRIVATE);
         editor = pref.edit();
         // set a sample name as interactive name
-        editor.putString("interactive_name", "Sample Name");
-        editor.commit();
+        if (pref.getString("interactive_name", null) == null) {
+            editor.putString("interactive_name", "Sample Name");
+            editor.commit();
+        }
 
         setContentView(R.layout.activity_main);
         Button configButton = findViewById(R.id.config_button);
@@ -200,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static String getInteractiveName() {
-        return pref.getString("interactive_name", null);
+    public static SharedPreferences getSharedPreferences() {
+        return pref;
     }
 
     /**

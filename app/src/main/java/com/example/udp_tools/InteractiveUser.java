@@ -45,4 +45,8 @@ public class InteractiveUser {
     public void setY(float y) {
         this.y = y;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

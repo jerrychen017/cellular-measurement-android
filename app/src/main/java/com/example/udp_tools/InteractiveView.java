@@ -1,6 +1,7 @@
 package com.example.udp_tools;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -50,7 +51,8 @@ public class InteractiveView extends View {
 
     private void init(AttributeSet attrs, int defStyle) {
         // initialize a socket for sending and receiving interactive packets
-        int id = initInteractive("128.220.221.21", 4579, MainActivity.getInteractiveName());
+        SharedPreferences mainPref = MainActivity.getSharedPreferences();
+        int id = initInteractive("128.220.221.21", 4579, mainPref.getString("interactive_name", null));
         if (id < 0) {
             System.err.println("Error occurred when connecting to user");
         } else {
@@ -84,6 +86,7 @@ public class InteractiveView extends View {
                                 userFound = true;
                                 usr.setX(pkt.x);
                                 usr.setY(pkt.y);
+                                usr.setName(pkt.name);
                             }
                         }
                         if (!userFound) {
