@@ -9,13 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * TODO:
- * 1. use id to determine color √
- * 2. have a timestamp in InteractivePacket
- * 3. display time diff in InteractiveView
- */
-
-/**
  * A view class that's responsible for drawing interactions
  */
 public class InteractiveView extends View {

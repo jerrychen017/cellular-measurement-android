@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -14,13 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button configButton = findViewById(R.id.config_button);
         Button bandwidthButton = findViewById(R.id.bandwidth_button);
-        Button generatorButton = findViewById(R.id.generate_data_button);
         Button echoButton = findViewById(R.id.echo_button);
         Button interactiveButton = findViewById(R.id.interactive_button);
 
@@ -46,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         output.setMovementMethod(new ScrollingMovementMethod());
 
 
-            // automatically bind preset address and port
+        // automatically bind preset address and port
         TextView messageField = findViewById(R.id.message_field);
         // getting preset ip address and port
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -62,16 +53,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             messageField.setText("Port is already bound or binding failed!");
         }
-
-
-//        // initialize EGL
-//        EGL10 egl = (EGL10) EGLContext.getEGL();
-//        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-//        boolean ret = egl.eglInitialize(display, null);
-//
-//        if (!ret) {
-//            System.out.println("EGL init error: " + egl.eglGetError());
-//        }
 
 
         // go to InteractiveActivity when interactive button is clicked
@@ -99,15 +80,6 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        // initialize EGL
-//                        EGL10 egl = (EGL10) EGLContext.getEGL();
-//                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-//                        boolean ret = egl.eglInitialize(display, null);
-//
-//                        if (!ret) {
-//                            System.out.println("EGL init error: " + egl.eglGetError());
-//                        }
-//                        TextView output = findViewById(R.id.output);
                         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View vi = inflater.inflate(R.layout.activity_configuration, null);
                         EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
@@ -115,63 +87,25 @@ public class MainActivity extends AppCompatActivity {
                         String ipStr = ipAddress.getText().toString();
                         int portInt = Integer.parseInt(port.getText().toString());
 
-//                        // initialize EGL
-//                        EGL10 egl = (EGL10) EGLContext.getEGL();
-//                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-//                        boolean ret = egl.eglInitialize(display, null);
-
-//                        if (!ret) {
-//                            System.out.println("EGL init error: " + egl.eglGetError());
-//                        }
-                        System.out.println("reached here");
                         bandwidthFromJNI(ipStr, portInt);
 
-//                output.append("\n" +bandwidthlOut);
-//                        System.out.println(result);
                     }
                 }).start();
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (Exception e) {
 
-            }
-        });
-
-        // send bandwidth measurement packets when clicking on the bandwidth button
-        generatorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                TextView messageField = findViewById(R.id.message_field);
-//                messageField.setText("Data stream has been generated!");
-
-
-
+                }
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        // initialize EGL
-//                        EGL10 egl = (EGL10) EGLContext.getEGL();
-//                        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-//                        boolean ret = egl.eglInitialize(display, null);
-//
-//                        if (!ret) {
-//                            System.out.println("EGL init error: " + egl.eglGetError());
-//                        }
                         generateDataFromJNI();
                         System.out.println("data stream has been generated!");
                     }
                 }).start();
 
-//                AsyncTask.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        //TODO your background code
-//                    }
-//                });
             }
         });
-
-
-
-
 
         echoButton.setOnClickListener(new View.OnClickListener() {
             @Override
