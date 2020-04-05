@@ -30,19 +30,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static int echoSequence = 0;
-    private static SharedPreferences pref;
-    private static Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pref = getSharedPreferences("cellular-measurement", MODE_PRIVATE);
-        editor = pref.edit();
-        // set a sample name as interactive name
-        if (pref.getString("interactive_name", null) == null) {
-            editor.putString("interactive_name", "Sample Name");
-            editor.commit();
-        }
 
         setContentView(R.layout.activity_main);
         Button configButton = findViewById(R.id.config_button);
@@ -202,9 +193,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static SharedPreferences getSharedPreferences() {
-        return pref;
-    }
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,

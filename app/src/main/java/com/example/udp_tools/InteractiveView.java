@@ -14,6 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO:
+ * 1. use id to determine color
+ * 2. have a timestamp in InteractivePacket
+ * 3. display time diff in InteractiveView
+ * 3. for every 50 pkts
+ */
+
+/**
  * A view class that's responsible for drawing interactions
  */
 public class InteractiveView extends View {
@@ -50,9 +58,13 @@ public class InteractiveView extends View {
 
 
     private void init(AttributeSet attrs, int defStyle) {
+
+    }
+
+    public void connect(String name) {
         // initialize a socket for sending and receiving interactive packets
-        SharedPreferences mainPref = MainActivity.getSharedPreferences();
-        int id = initInteractive("128.220.221.21", 4579, mainPref.getString("interactive_name", null));
+        int id = initInteractive("128.220.221.21", 4579, name);
+
         if (id < 0) {
             System.err.println("Error occurred when connecting to user");
         } else {

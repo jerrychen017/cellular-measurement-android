@@ -2,9 +2,13 @@ package com.example.udp_tools;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,6 +34,16 @@ public class InteractiveActivity extends AppCompatActivity {
             }
         });
 
+        Button connectButton = findViewById(R.id.interactive_connect_button);
+        connectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InteractiveView interactiveView = findViewById(R.id.interactiveView);
+                EditText name = findViewById(R.id.interactive_name);
+                interactiveView.connect(name.getText().toString());
+            }
+        });
+
         counterView =  findViewById(R.id.counter_view);
         numDroppedView = findViewById(R.id.num_dropped_view);
     }
@@ -40,6 +54,7 @@ public class InteractiveActivity extends AppCompatActivity {
         counterView.setText("Counter: " + counter);
         numDroppedView.setText("Num Dropped: " + num_dropped);
     }
+
 }
 
 

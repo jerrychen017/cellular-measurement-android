@@ -52,6 +52,7 @@ Java_com_example_udp_1tools_MainActivity_generateDataFromJNI(
         JNIEnv *env,
         jobject /* this */
         ) {
+    start_logger("data_generator"); // starting logger
     start_generator(true);
     return;
 }
@@ -171,7 +172,7 @@ Java_com_example_udp_1tools_InteractiveView_initInteractive(
         jstring address,
         jint port,
         jstring name) {
-    start_logger("interactive"); // starting logger
+//    start_logger("interactive"); // starting logger
     // convert jstring ip address to string
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(address, &isCopy);
