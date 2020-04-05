@@ -41,7 +41,13 @@ public class InteractiveActivity extends AppCompatActivity {
             public void onClick(View view) {
                 InteractiveView interactiveView = findViewById(R.id.interactiveView);
                 EditText name = findViewById(R.id.interactive_name);
-                interactiveView.connect(name.getText().toString());
+                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View vi = inflater.inflate(R.layout.activity_configuration, null);
+                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                EditText port = (EditText) vi.findViewById(R.id.interactive_port);
+                String ipStr = ipAddress.getText().toString();
+                int portInt = Integer.parseInt(port.getText().toString());
+                interactiveView.connect(ipStr, portInt, name.getText().toString());
             }
         });
 

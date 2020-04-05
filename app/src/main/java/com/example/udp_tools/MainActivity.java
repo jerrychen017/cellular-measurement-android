@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi = inflater.inflate(R.layout.activity_configuration, null);
         EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-        EditText port = (EditText) vi.findViewById(R.id.port);
+        EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
         String ipStr = ipAddress.getText().toString();
         int portInt = Integer.parseInt(port.getText().toString());
         // bind port
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View vi = inflater.inflate(R.layout.activity_configuration, null);
                         EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                        EditText port = (EditText) vi.findViewById(R.id.port);
+                        EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
                         String ipStr = ipAddress.getText().toString();
                         int portInt = Integer.parseInt(port.getText().toString());
 
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View vi = inflater.inflate(R.layout.activity_configuration, null);
                 EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                EditText port = (EditText) vi.findViewById(R.id.port);
+                EditText port = (EditText) vi.findViewById(R.id.interactive_port);
                 String ipStr = ipAddress.getText().toString();
                 int portInt = Integer.parseInt(port.getText().toString());
 

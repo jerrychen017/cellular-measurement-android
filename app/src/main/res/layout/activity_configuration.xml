@@ -7,117 +7,33 @@
     android:layout_height="match_parent"
     tools:context=".ConfigurationActivity">
 
-    <TextView
-        android:id="@+id/max_speed_label"
-        android:layout_width="73dp"
-        android:layout_height="37dp"
-        android:text="@string/max_speed_mbps"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.631" />
-
     <EditText
-        android:id="@+id/max_speed"
-        android:layout_width="181dp"
-        android:layout_height="38dp"
+        android:id="@+id/interactive_port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/sending_rate"
+        android:hint="@string/port_number"
         android:inputType="textPersonName"
-        android:text="@string/_10"
+        android:text="4578"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.787"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.63" />
-
-    <EditText
-        android:id="@+id/min_speed"
-        android:layout_width="181dp"
-        android:layout_height="38dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/sending_rate"
-        android:inputType="textPersonName"
-        android:text="@string/_0_1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.555" />
+        app:layout_constraintVertical_bias="0.198" />
 
     <TextView
-        android:id="@+id/min_speed_label"
-        android:layout_width="73dp"
-        android:layout_height="37dp"
-        android:text="@string/min_speed_mbps"
+        android:id="@+id/interactive_port_label"
+        android:layout_width="120dp"
+        android:layout_height="42dp"
+        android:text="Interactive Port"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintHorizontal_bias="0.092"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.556" />
-
-    <TextView
-        android:id="@+id/echo_timeout_label2"
-        android:layout_width="72dp"
-        android:layout_height="36dp"
-        android:text="@string/echo_timeout_s"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.205" />
-
-    <EditText
-        android:id="@+id/echo_timeout2"
-        android:layout_width="181dp"
-        android:layout_height="38dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/sending_rate"
-        android:inputType="textPersonName"
-        android:text="@string/_5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.595"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.216" />
-
-    <EditText
-        android:id="@+id/burst_size"
-        android:layout_width="170dp"
-        android:layout_height="38dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/sending_rate"
-        android:inputType="number|textPersonName"
-        android:text="@string/_10"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.614"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.301" />
-
-    <TextView
-        android:id="@+id/interval_size_label"
-        android:layout_width="67dp"
-        android:layout_height="35dp"
-        android:text="@string/interval_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.107"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.474" />
+        app:layout_constraintVertical_bias="0.197" />
 
     <EditText
         android:id="@+id/interval_size"
@@ -130,10 +46,146 @@
         android:text="@string/_100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.597"
+        app:layout_constraintHorizontal_bias="0.593"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.471" />
+        app:layout_constraintVertical_bias="0.526" />
+
+    <TextView
+        android:id="@+id/interval_size_label"
+        android:layout_width="67dp"
+        android:layout_height="35dp"
+        android:text="@string/interval_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.104"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53" />
+
+    <EditText
+        android:id="@+id/min_speed"
+        android:layout_width="181dp"
+        android:layout_height="38dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/sending_rate"
+        android:inputType="textPersonName"
+        android:text="@string/_0_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.595"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.611" />
+
+    <TextView
+        android:id="@+id/min_speed_label"
+        android:layout_width="73dp"
+        android:layout_height="37dp"
+        android:text="@string/min_speed_mbps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.612" />
+
+    <EditText
+        android:id="@+id/burst_size"
+        android:layout_width="170dp"
+        android:layout_height="38dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/sending_rate"
+        android:inputType="number|textPersonName"
+        android:text="@string/_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.609"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.357" />
+
+    <TextView
+        android:id="@+id/echo_timeout_label2"
+        android:layout_width="72dp"
+        android:layout_height="36dp"
+        android:text="@string/echo_timeout_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.273" />
+
+    <TextView
+        android:id="@+id/burst_size_label"
+        android:layout_width="72dp"
+        android:layout_height="36dp"
+        android:text="@string/burst_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.359" />
+
+    <EditText
+        android:id="@+id/echo_timeout2"
+        android:layout_width="181dp"
+        android:layout_height="38dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/sending_rate"
+        android:inputType="textPersonName"
+        android:text="@string/_5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.591"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.272" />
+
+    <EditText
+        android:id="@+id/max_speed"
+        android:layout_width="181dp"
+        android:layout_height="38dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/sending_rate"
+        android:inputType="textPersonName"
+        android:text="@string/_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.595"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.686" />
+
+    <TextView
+        android:id="@+id/max_speed_label"
+        android:layout_width="73dp"
+        android:layout_height="37dp"
+        android:text="@string/max_speed_mbps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.687" />
+
+    <TextView
+        android:id="@+id/burst_factor_label"
+        android:layout_width="67dp"
+        android:layout_height="35dp"
+        android:text="@string/burst_factor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.104"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.449" />
 
     <EditText
         android:id="@+id/burst_factor"
@@ -146,34 +198,10 @@
         android:text="@string/_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.597"
+        app:layout_constraintHorizontal_bias="0.593"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.391" />
-
-    <TextView
-        android:id="@+id/burst_factor_label"
-        android:layout_width="67dp"
-        android:layout_height="35dp"
-        android:text="@string/burst_factor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.107"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.393" />
-
-    <TextView
-        android:id="@+id/burst_size_label"
-        android:layout_width="72dp"
-        android:layout_height="36dp"
-        android:text="@string/burst_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.303" />
+        app:layout_constraintVertical_bias="0.447" />
 
     <TextView
         android:id="@+id/ip_label"
@@ -204,10 +232,10 @@
         app:layout_constraintVertical_bias="0.037" />
 
     <TextView
-        android:id="@+id/port_label"
-        android:layout_width="29dp"
-        android:layout_height="41dp"
-        android:text="@string/port"
+        android:id="@+id/bandwidth_port_label"
+        android:layout_width="115dp"
+        android:layout_height="38dp"
+        android:text="Bandwidth Port"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.091"
@@ -216,7 +244,7 @@
         app:layout_constraintVertical_bias="0.121" />
 
     <EditText
-        android:id="@+id/port"
+        android:id="@+id/bandwidth_port"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -226,7 +254,7 @@
         android:text="@string/_4579"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.388"
+        app:layout_constraintHorizontal_bias="0.787"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.12" />

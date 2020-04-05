@@ -52,9 +52,9 @@ public class InteractiveView extends View {
         }
     }
 
-    public void connect(String name) {
+    public void connect(String address, int port, String name) {
         // initialize a socket for sending and receiving interactive packets
-        int id = initInteractive("128.220.221.21", 4579, name);
+        int id = initInteractive(address, port, name);
 
         if (id < 0) {
             System.err.println("Error occurred when connecting to user");
