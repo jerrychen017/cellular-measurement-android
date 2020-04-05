@@ -18,14 +18,12 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         native-lib.cpp
-        old/echo_client.c
-#        old/old_utils.c
         cellular-measurement/bandwidth_measurement/data_generator.c
         cellular-measurement/bandwidth_measurement/controller.c
         cellular-measurement/bandwidth_measurement/bandwidth_utils.c
         cellular-measurement/bandwidth_measurement/sendto_dbg.c
         cellular-measurement/interactive_server/interactive_client.c
-
+        cellular-measurement/echo_client/echo_client.c
         logger.c
         )
 

@@ -27,6 +27,7 @@ public class InteractiveView extends View {
     private int counter = 0;
     private int last_received_sequence_num = -1;
     private int last_sent_sequence_num = -1;
+    private double latency = 0;
     private int num_dropped_packet = 0;
 
     private int myID;
@@ -87,9 +88,10 @@ public class InteractiveView extends View {
                             counter++;
                             num_dropped_packet += (received_seq_num - last_received_sequence_num - 1);
                             last_received_sequence_num = received_seq_num;
+                            latency = pkt.latency;
                             Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
                         }
-                        InteractiveActivity.setCounter(counter, num_dropped_packet);
+                        InteractiveActivity.updateStat(counter, num_dropped_packet, latency);
                     } else { // other user
                         boolean userFound = false;
                         for (InteractiveUser usr : users) {

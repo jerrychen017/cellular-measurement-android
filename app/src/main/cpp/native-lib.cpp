@@ -2,7 +2,7 @@
 #include <string>
 
 extern "C" {
-#include "old/echo_client.h"
+#include "cellular-measurement/echo_client/echo_client.h"
 #include "cellular-measurement/bandwidth_measurement/data_generator.h"
 #include "cellular-measurement/bandwidth_measurement/controller.h"
 #include "cellular-measurement/interactive_server/interactive_client.h"
@@ -10,23 +10,6 @@ extern "C" {
 }
 
 extern "C" char * stdout_buffer;
-
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_udp_1tools_MainActivity_interarrivalFromJNI(
-        JNIEnv *env,
-        jobject /* this */,
-        jstring ip,
-        jint port) {
-    // convert jstring ip address to string
-    jboolean isCopy;
-    std::string address_c = env->GetStringUTFChars(ip, &isCopy);
-    // convert jint to int
-    int port_c = (int) port;
-//    double msec = echo_client_start(port_c, address_c.c_str(), false);
-    char * out = client_send(address_c.c_str(), port_c);
-//    std::string output = "RTT is " + std::to_string(msec) + " ms";
-    return env->NewStringUTF(std::string(out).c_str());
-}
 
 extern "C" JNIEXPORT jint JNICALL
 Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
@@ -65,21 +48,14 @@ Java_com_example_udp_1tools_MainActivity_bindFromJNI(
         jint port) {
 //    std::string address =  "128.220.221.21";
     // convert jstring ip address to string
-//    jboolean isCopy;
-//    std::string address_c = env->GetStringUTFChars(ip, &isCopy);
-//    // convert jint to int
-//    int port_c = (int) port;
-//
-//    int status = client_bind(address_c.c_str(), port_c);
-
-    // convert jstring ip address to string
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     // convert jint to int
     int port_c = (int) port;
-    init_socket(address_c.c_str(), port_c);
 
-    return 0;
+    int status = client_bind(address_c.c_str(), port_c);
+
+    return status;
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -97,7 +73,7 @@ Java_com_example_udp_1tools_MainActivity_echoFromJNI(
     // convert jint to int
     int port_c = (int) port;
     int seq_c = (int) seq;
-    char * out = echo_client(address_c.c_str(), port_c, seq_c);
+    char * out = echo_send(address_c.c_str(), port_c, seq_c);
 
     return env->NewStringUTF(std::string(out).c_str());
 }
@@ -133,13 +109,14 @@ Java_com_example_udp_1tools_InteractiveView_receiveInteractivePacket(
     jclass interactive_pkt_class;
     jmethodID constructor;
     interactive_pkt_class = env->FindClass("com/example/udp_tools/InteractivePacket");
-    constructor = env->GetMethodID(interactive_pkt_class, "<init>", "(IFFILjava/lang/String;)V");
-    jvalue args[5];
+    constructor = env->GetMethodID(interactive_pkt_class, "<init>", "(IFFIDLjava/lang/String;)V");
+    jvalue args[6];
     args[0].i = echoPacket.seq;
     args[1].f = echoPacket.x;
     args[2].f = echoPacket.y;
     args[3].i = echoPacket.id;
-    args[4].l = env->NewStringUTF(std::string(echoPacket.name).c_str());
+    args[4].d = echoPacket.latency;
+    args[5].l = env->NewStringUTF(std::string(echoPacket.name).c_str());
 
     echo_java_obj = env->NewObjectA(interactive_pkt_class, constructor, args);
     return echo_java_obj;
@@ -152,7 +129,7 @@ Java_com_example_udp_1tools_InteractiveView_initInteractive(
         jstring address,
         jint port,
         jstring name) {
-//    start_logger("interactive"); // starting logger
+    start_logger("interactive"); // starting logger
     // convert jstring ip address to string
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(address, &isCopy);

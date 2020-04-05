@@ -6,6 +6,18 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/latency_view"
+        android:layout_width="190dp"
+        android:layout_height="15dp"
+        android:text="Latency"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.61"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.889" />
+
+    <TextView
         android:id="@+id/num_dropped_view"
         android:layout_width="190dp"
         android:layout_height="15dp"
@@ -15,7 +27,7 @@
         app:layout_constraintHorizontal_bias="0.61"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.886" />
+        app:layout_constraintVertical_bias="0.856" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/goback_button"
@@ -32,8 +44,8 @@
 
     <com.example.udp_tools.InteractiveView
         android:id="@+id/interactiveView"
-        android:layout_width="349dp"
-        android:layout_height="569dp"
+        android:layout_width="350dp"
+        android:layout_height="540dp"
         android:background="#2196F3"
         android:paddingLeft="20dp"
         android:paddingBottom="40dp"
@@ -42,9 +54,10 @@
         app:exampleString="Hello, InteractiveView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.179" />
+        app:layout_constraintVertical_bias="0.178" />
 
     <TextView
         android:id="@+id/counter_view"
@@ -56,7 +69,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.856" />
+        app:layout_constraintVertical_bias="0.826" />
 
     <EditText
         android:id="@+id/interactive_name"

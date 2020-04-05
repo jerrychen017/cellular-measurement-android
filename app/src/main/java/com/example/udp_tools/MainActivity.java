@@ -194,15 +194,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     *
-     * Calls a cpp function to send interarrival packets to the server
-     */
-    public native String interarrivalFromJNI(String ip, int port);
-
     public native int bandwidthFromJNI(String ip, int port);
     public native void generateDataFromJNI();
 

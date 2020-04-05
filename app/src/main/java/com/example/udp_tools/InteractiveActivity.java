@@ -18,6 +18,7 @@ public class InteractiveActivity extends AppCompatActivity {
     static int num_dropped;
     static TextView counterView;
     static TextView numDroppedView;
+    static TextView latencyView;
 
 
     @Override
@@ -46,13 +47,15 @@ public class InteractiveActivity extends AppCompatActivity {
 
         counterView =  findViewById(R.id.counter_view);
         numDroppedView = findViewById(R.id.num_dropped_view);
+        latencyView = findViewById(R.id.latency_view);
     }
 
-    public static void setCounter(int num_count, int num_dropped_packet) {
+    public static void updateStat(int num_count, int num_dropped_packet, double latency) {
         counter = num_count;
         num_dropped = num_dropped_packet;
         counterView.setText("Counter: " + counter);
         numDroppedView.setText("Num Dropped: " + num_dropped);
+        latencyView.setText("Latency: " + String.format("%.2f", latency) + " ms");
     }
 
 }
