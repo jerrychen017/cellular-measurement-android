@@ -18,17 +18,65 @@ public class InteractiveUser {
         this.x = x;
         this.y = y;
         Paint newPaint = new Paint();
-        Random rnd = new Random();
-        int r = rnd.nextInt(256);
-        int g = rnd.nextInt(256);
-        int b = rnd.nextInt(256);
+        int r;
+        int g;
+        int b;
+        switch (id) {
+            case 0: // red
+                r = 255;
+                g = 0;
+                b = 0;
+                break;
+            case 1: // blue
+                r = 0;
+                g = 0;
+                b = 255;
+                break;
+            case 2: // lime
+                r = 0;
+                g = 255;
+                b = 0;
+                break;
+            case 3: // yellow
+                r = 255;
+                g = 127;
+                b = 80;
+                break;
+            case 4: // coral
+                r = 0;
+                g = 255;
+                b = 255;
+                break;
+            case 5: // Magenta
+                r = 255;
+                g = 0;
+                b = 255;
+                break;
+            case 6: // silver
+                r = 192;
+                g = 192;
+                b = 192;
+                break;
+            case 7: // grey
+                r = 128;
+                g = 128;
+                b = 128;
+                break;
+            case 8: // olive
+                r = 128;
+                g = 128;
+                b = 0;
+                break;
+            default: // purple
+                r = 128;
+                g = 0;
+                b = 128;
+                break;
+        }
         newPaint.setARGB(255, r, g, b);
         this.circlePaint = newPaint;
 
         Paint newTextPaint= new Paint();
-//        r = (~r) & 0xff;
-//        g = (~g) & 0xff;
-//        b = (~b) & 0xff;
         newTextPaint.setARGB(255, 0,0,0);
         newTextPaint.setTextSize(55f);
         newTextPaint.setAntiAlias(true);

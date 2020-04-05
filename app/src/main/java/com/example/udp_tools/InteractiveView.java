@@ -1,24 +1,18 @@
 package com.example.udp_tools;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * TODO:
- * 1. use id to determine color
+ * 1. use id to determine color √
  * 2. have a timestamp in InteractivePacket
  * 3. display time diff in InteractiveView
- * 3. for every 50 pkts
  */
 
 /**
@@ -35,11 +29,10 @@ public class InteractiveView extends View {
     private int last_sent_sequence_num = -1;
     private int num_dropped_packet = 0;
 
-    // my coordinates
-    private float xcoord;
-    private float ycoord;
     private int myID;
-    private List<InteractiveUser> users = new ArrayList<>();
+    private int maxUsers = 10;
+    private InteractiveUser[] users;
+    private boolean isConnected = false;
 
     public InteractiveView(Context context) {
         super(context);
@@ -58,7 +51,11 @@ public class InteractiveView extends View {
 
 
     private void init(AttributeSet attrs, int defStyle) {
-
+        users = new InteractiveUser[maxUsers];
+        // initialize users to null
+        for (int i = 0; i < maxUsers; i++) {
+            users[i] = null;
+        }
     }
 
     public void connect(String name) {
@@ -69,6 +66,8 @@ public class InteractiveView extends View {
             System.err.println("Error occurred when connecting to user");
         } else {
             myID = id;
+            // new interactive user for myself
+            users[myID] = new InteractiveUser(myID ,name, 0, 0);
         }
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
@@ -83,8 +82,8 @@ public class InteractiveView extends View {
                         if (last_received_sequence_num > received_seq_num) { // received packet was delayed
                             Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
                         } else {
-                            xcoord = pkt.x;
-                            ycoord = pkt.y;
+                            users[myID].setX(pkt.x);
+                            users[myID].setY(pkt.y);
                             counter++;
                             num_dropped_packet += (received_seq_num - last_received_sequence_num - 1);
                             last_received_sequence_num = received_seq_num;
@@ -102,26 +101,27 @@ public class InteractiveView extends View {
                             }
                         }
                         if (!userFound) {
-                            users.add(new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y));
+                            users[received_id] = new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y);
                         }
                         invalidate();
                     }
                 }
             }
         }).start();
+        isConnected = true;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.CYAN);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLUE);
-        canvas.drawCircle(xcoord, ycoord, 100,paint);
 
-        for (InteractiveUser usr: users) {
-            canvas.drawCircle(usr.x, usr.y, 100,usr.circlePaint);
-            canvas.drawText(usr.name, usr.x, usr.y, usr.textPaint);
+        for (int i = 0; i < maxUsers; i++) {
+            if (users[i] != null) {
+                InteractiveUser usr = users[i];
+                canvas.drawCircle(usr.x, usr.y, 100, usr.circlePaint);
+                canvas.drawText(usr.name, usr.x, usr.y, usr.textPaint);
+            }
         }
     }
 
@@ -130,10 +130,12 @@ public class InteractiveView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_DOWN:
-                last_sent_sequence_num++;
-                int ret = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
-                if (ret > 0) { // error occurred
-                    Log.d("interactive", "Error occurred when sending interactive packets");
+                if (isConnected) {
+                    last_sent_sequence_num++;
+                    int ret = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
+                    if (ret > 0) { // error occurred
+                        Log.d("interactive", "Error occurred when sending interactive packets");
+                    }
                 }
                 break;
             default:
@@ -143,8 +145,6 @@ public class InteractiveView extends View {
         invalidate();
         return true;
     }
-
-    public native int echoFromJNI(String ip, int port, int seq);
 
     /**
      * sends an interactive packet with coordinate x and y, and a sequence number
@@ -161,5 +161,14 @@ public class InteractiveView extends View {
     public native InteractivePacket receiveInteractivePacket();
 
 
+    /**
+     * Set up socket to the server and send a CONNECT packet to the server with a name.
+     * Wait for the server to respond with a CONNECT packet containing an id. If any error occurred,
+     * returned id would be negative indicating an error
+     * @param address server address
+     * @param port server port
+     * @param name my user name
+     * @return id
+     */
     public native int initInteractive(String address, int port, String name);
 }

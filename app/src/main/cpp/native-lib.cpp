@@ -102,26 +102,6 @@ Java_com_example_udp_1tools_MainActivity_echoFromJNI(
     return env->NewStringUTF(std::string(out).c_str());
 }
 
-extern "C" JNIEXPORT jint JNICALL
-Java_com_example_udp_1tools_InteractiveView_echoFromJNI(
-        JNIEnv *env,
-        jobject /* this */,
-        jstring ip,
-        jint port,
-        jint seq) {
-//    std::string address =  "128.220.221.21";
-    // convert jstring ip address to string
-    jboolean isCopy;
-    std::string address_c = env->GetStringUTFChars(ip, &isCopy);
-    // convert jint to int
-    int port_c = (int) port;
-    int seq_c = (int) seq;
-    int result = draw_client(address_c.c_str(), port_c, seq_c);
-
-    return result;
-}
-
-
 /**
     * sends an interactive packet with coordinate x and y
     * @return sequence number of the packet
