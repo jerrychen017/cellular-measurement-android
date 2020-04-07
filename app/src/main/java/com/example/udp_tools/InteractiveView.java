@@ -88,7 +88,7 @@ public class InteractiveView extends View {
                     } else { // other user
                         boolean userFound = false;
                         for (InteractiveUser usr : users) {
-                            if (usr.id == received_id) {
+                            if (usr != null && usr.id == received_id) {
                                 userFound = true;
                                 usr.setX(pkt.x);
                                 usr.setY(pkt.y);
