@@ -15,4 +15,6 @@
 int start_logger(const char *app_name);
 
 static void *thread_func(void*);
+
+void sendMessage(char* buffer, int bufferlen);
 #endif //UDP_TOOLS_LOGGER_H

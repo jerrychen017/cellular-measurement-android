@@ -38,6 +38,7 @@ static void *thread_func(void* ptr)
         if(buf[rdsz - 1] == '\n') --rdsz;
         buf[rdsz] = 0;  /* add null-terminator */
         __android_log_write(ANDROID_LOG_DEBUG, tag, buf);
+        sendMessage(buf, sizeof(buf));
     }
     return 0;
 }
