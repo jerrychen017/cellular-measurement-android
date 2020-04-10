@@ -24,6 +24,7 @@ add_library( # Sets the name of the library.
         cellular-measurement/bandwidth_measurement/sendto_dbg.c
         cellular-measurement/interactive_server/interactive_client.c
         cellular-measurement/echo_client/echo_client.c
+        feedbackLogger.cpp
         logger.c
         )
 

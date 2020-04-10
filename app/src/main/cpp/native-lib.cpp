@@ -1,6 +1,8 @@
 #include <jni.h>
 #include <string>
 
+#include "setupFeedback.h"
+
 extern "C" {
 #include "cellular-measurement/echo_client/echo_client.h"
 #include "cellular-measurement/bandwidth_measurement/data_generator.h"
@@ -14,7 +16,7 @@ extern "C" char * stdout_buffer;
 extern "C" JNIEXPORT jint JNICALL
 Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
         JNIEnv *env,
-        jobject /* this */,
+        jobject activity /* this */,
         jstring ip,
         jint port) {
 //    std::string address =  "128.220.221.21";
@@ -22,6 +24,9 @@ Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
 //    start_logger("controller"); // starting logger
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
+
+    setupFeedback(env, activity);
+
     // convert jint to int
     int port_c = (int) port;
 //    double msec = echo_client_start(port_c, address_c.c_str(), false);

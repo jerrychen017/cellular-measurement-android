@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static int echoSequence = 0;
+    static Handler staticHandler;
+    TextView output;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         Button echoButton = findViewById(R.id.echo_button);
         Button interactiveButton = findViewById(R.id.interactive_button);
 
-        TextView output = findViewById(R.id.output);
+        output = findViewById(R.id.output);
         output.setMovementMethod(new ScrollingMovementMethod());
 
 
@@ -125,8 +130,30 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(RTT);
             }
         });
+        staticHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                output.append("\n" + new String( msg.getData().getCharArray("feedback")));
+            }
+        };
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        staticHandler = null;
+    }
+
+
+    public void feedbackMessage(String s) {
+//        Log.d("C++ feedback", "java called!");
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putCharArray("feedback", s.toCharArray());
+        msg.setData(bundle);
+        staticHandler.sendMessage(msg);
+    }
 
     public native int bandwidthFromJNI(String ip, int port);
     public native void generateDataFromJNI();
