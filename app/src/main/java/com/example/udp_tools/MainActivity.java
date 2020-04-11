@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
     static Handler staticHandler;
     TextView output;
 
+    // variables for interaction
+    static int counter;
+    static int num_dropped;
+    static TextView counterView;
+    static TextView numDroppedView;
+    static TextView latencyView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +45,13 @@ public class MainActivity extends AppCompatActivity {
         Button configButton = findViewById(R.id.config_button);
         Button bandwidthButton = findViewById(R.id.bandwidth_button);
         Button echoButton = findViewById(R.id.echo_button);
-        Button interactiveButton = findViewById(R.id.interactive_button);
 
+        // initialize output TextView
         output = findViewById(R.id.output);
         output.setMovementMethod(new ScrollingMovementMethod());
 
 
         // automatically bind preset address and port
-        TextView messageField = findViewById(R.id.message_field);
         // getting preset ip address and port
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi = inflater.inflate(R.layout.activity_configuration, null);
@@ -54,20 +62,11 @@ public class MainActivity extends AppCompatActivity {
         // bind port
         int status = bindFromJNI(ipStr, portInt);
         if (status == 0) {
-            messageField.setText("Binding was successful!");
+            output.append("Binding was successful!");
         } else {
-            messageField.setText("Port is already bound or binding failed!");
+            output.append("Port is already bound or binding failed!");
         }
 
-
-        // go to InteractiveActivity when interactive button is clicked
-        interactiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent interactiveActivityIntent = new Intent(MainActivity.this, InteractiveActivity.class);
-                startActivity(interactiveActivityIntent);
-            }
-        });
 
         // go to ConfigurationActivity when config button is clicked
         configButton.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +136,27 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        // for interaction
+        Button connectButton = findViewById(R.id.interactive_connect_button);
+        connectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InteractiveView interactiveView = findViewById(R.id.interactiveView);
+                EditText name = findViewById(R.id.interactive_name);
+                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View vi = inflater.inflate(R.layout.activity_configuration, null);
+                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                EditText port = (EditText) vi.findViewById(R.id.interactive_port);
+                String ipStr = ipAddress.getText().toString();
+                int portInt = Integer.parseInt(port.getText().toString());
+                interactiveView.connect(ipStr, portInt, name.getText().toString());
+            }
+        });
+
+        counterView =  findViewById(R.id.counter_view);
+        numDroppedView = findViewById(R.id.num_dropped_view);
+        latencyView = findViewById(R.id.latency_view);
+
     }
 
     @Override
@@ -153,6 +173,14 @@ public class MainActivity extends AppCompatActivity {
         bundle.putCharArray("feedback", s.toCharArray());
         msg.setData(bundle);
         staticHandler.sendMessage(msg);
+    }
+
+    public static void updateStat(int num_count, int num_dropped_packet, double latency) {
+        counter = num_count;
+        num_dropped = num_dropped_packet;
+        counterView.setText("Counter: " + counter);
+        numDroppedView.setText("Num Dropped: " + num_dropped);
+        latencyView.setText("Latency: " + String.format("%.2f", latency) + " ms");
     }
 
     public native int bandwidthFromJNI(String ip, int port);

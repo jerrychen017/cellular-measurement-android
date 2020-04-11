@@ -84,7 +84,7 @@ public class InteractiveView extends View {
                             latency = pkt.latency;
                             Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
                         }
-                        InteractiveActivity.updateStat(counter, num_dropped_packet, latency);
+                        MainActivity.updateStat(counter, num_dropped_packet, latency);
                     } else { // other user
                         boolean userFound = false;
                         for (InteractiveUser usr : users) {
