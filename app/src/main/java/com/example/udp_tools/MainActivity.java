@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     static TextView counterView;
     static TextView numDroppedView;
     static TextView latencyView;
+    static Thread controllerThread;
+    static Thread dataGeneraotrThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button configButton = findViewById(R.id.config_button);
         Button bandwidthButton = findViewById(R.id.bandwidth_button);
+        Button bandwidthStopButton = findViewById(R.id.bandwidth_stop_button);
         Button echoButton = findViewById(R.id.echo_button);
 
         // initialize output TextView
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Thread(new Runnable() {
+                controllerThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -94,20 +97,32 @@ public class MainActivity extends AppCompatActivity {
                         bandwidthFromJNI(ipStr, portInt);
 
                     }
-                }).start();
+                });
+                controllerThread.start();
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (Exception e) {
 
                 }
-                new Thread(new Runnable() {
+                dataGeneraotrThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         generateDataFromJNI();
                         System.out.println("data stream has been generated!");
                     }
-                }).start();
+                });
+                dataGeneraotrThread.start();
 
+            }
+        });
+
+        bandwidthStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // stop bandwidth thread
+                dataGeneraotrThread.interrupt();
+
+                controllerThread.interrupt();
             }
         });
 
