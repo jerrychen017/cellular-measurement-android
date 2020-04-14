@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
     static TextView counterView;
     static TextView numDroppedView;
     static TextView latencyView;
-    static Thread controllerThread;
-    static Thread dataGeneraotrThread;
+//    static Thread controllerThread;
+//    static Thread dataGeneraotrThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +56,19 @@ public class MainActivity extends AppCompatActivity {
 
         // automatically bind preset address and port
         // getting preset ip address and port
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View vi = inflater.inflate(R.layout.activity_configuration, null);
-        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-        EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
-        String ipStr = ipAddress.getText().toString();
-        int portInt = Integer.parseInt(port.getText().toString());
-        // bind port
-        int status = bindFromJNI(ipStr, portInt);
-        if (status == 0) {
-            output.append("Binding was successful!");
-        } else {
-            output.append("Port is already bound or binding failed!");
-        }
+//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View vi = inflater.inflate(R.layout.activity_configuration, null);
+//        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+//        EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
+//        String ipStr = ipAddress.getText().toString();
+//        int portInt = Integer.parseInt(port.getText().toString());
+//        // bind port
+//        int status = bindFromJNI(ipStr, portInt);
+//        if (status == 0) {
+//            output.append("Binding was successful!");
+//        } else {
+//            output.append("Port is already bound or binding failed!");
+//        }
 
 
         // go to ConfigurationActivity when config button is clicked
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controllerThread = new Thread(new Runnable() {
+               new Thread(new Runnable() {
                     @Override
                     public void run() {
                         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -97,21 +97,19 @@ public class MainActivity extends AppCompatActivity {
                         bandwidthFromJNI(ipStr, portInt);
 
                     }
-                });
-                controllerThread.start();
+                }).start();
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (Exception e) {
 
                 }
-                dataGeneraotrThread = new Thread(new Runnable() {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         generateDataFromJNI();
                         System.out.println("data stream has been generated!");
                     }
-                });
-                dataGeneraotrThread.start();
+                }).start();
 
             }
         });
@@ -120,9 +118,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                // stop bandwidth thread
-                dataGeneraotrThread.interrupt();
-
-                controllerThread.interrupt();
+                stopDataGeneratorThreadFromJNI();
+                stopControllerThreadFromJNI();
             }
         });
 
@@ -210,5 +207,8 @@ public class MainActivity extends AppCompatActivity {
     public native int bindFromJNI(String ip, int port);
 
     public native String echoFromJNI(String ip, int port, int seq);
+
+    public native void stopDataGeneratorThreadFromJNI();
+    public native void stopControllerThreadFromJNI();
 
 }

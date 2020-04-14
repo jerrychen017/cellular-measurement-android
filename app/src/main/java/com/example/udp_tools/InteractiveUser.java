@@ -12,7 +12,7 @@ public class InteractiveUser {
     Paint textPaint;
     Paint circlePaint;
 
-    public InteractiveUser(int id, String name, float x, float y) {
+    public InteractiveUser(int id, String name, float x, float y, int canvasWidth) {
         this.id = id;
         this.name = name;
         this.x = x;
@@ -78,7 +78,8 @@ public class InteractiveUser {
 
         Paint newTextPaint= new Paint();
         newTextPaint.setARGB(255, 0,0,0);
-        newTextPaint.setTextSize(55f);
+//        newTextPaint.setTextSize(55f);
+        newTextPaint.setTextSize(canvasWidth / 25);
         newTextPaint.setAntiAlias(true);
         newTextPaint.setTextAlign(Paint.Align.CENTER);
 

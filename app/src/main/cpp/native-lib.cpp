@@ -36,6 +36,19 @@ Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
 }
 
 extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopDataGeneratorThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_data_generator_thread();
+}
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopControllerThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_controller_thread();
+}
+
+extern "C" JNIEXPORT void JNICALL
 Java_com_example_udp_1tools_MainActivity_generateDataFromJNI(
         JNIEnv *env,
         jobject /* this */

@@ -61,7 +61,7 @@ public class InteractiveView extends View {
         } else {
             myID = id;
             // new interactive user for myself
-            users[myID] = new InteractiveUser(myID ,name, 0, 0);
+            users[myID] = new InteractiveUser(myID ,name, 0, 0, getWidth());
         }
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
@@ -96,7 +96,7 @@ public class InteractiveView extends View {
                             }
                         }
                         if (!userFound) {
-                            users[received_id] = new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y);
+                            users[received_id] = new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y, getWidth());
                         }
                         invalidate();
                     }
@@ -114,8 +114,10 @@ public class InteractiveView extends View {
         for (int i = 0; i < maxUsers; i++) {
             if (users[i] != null) {
                 InteractiveUser usr = users[i];
-                canvas.drawCircle(usr.x, usr.y, 100, usr.circlePaint);
-                canvas.drawText(usr.name, usr.x, usr.y, usr.textPaint);
+                float width = usr.x * getWidth();
+                float height = usr.y * getHeight();
+                canvas.drawCircle(width, height, getWidth()/20, usr.circlePaint);
+                canvas.drawText(usr.name, width, height, usr.textPaint);
             }
         }
     }
@@ -127,7 +129,8 @@ public class InteractiveView extends View {
             case MotionEvent.ACTION_DOWN:
                 if (isConnected) {
                     last_sent_sequence_num++;
-                    int ret = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
+
+                    int ret = sendInteractivePacket(last_sent_sequence_num, event.getX()/getWidth(), event.getY()/getHeight());
                     if (ret > 0) { // error occurred
                         Log.d("interactive", "Error occurred when sending interactive packets");
                     }
