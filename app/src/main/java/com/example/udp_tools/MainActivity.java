@@ -2,6 +2,7 @@ package com.example.udp_tools;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     static TextView counterView;
     static TextView numDroppedView;
     static TextView latencyView;
-//    static Thread controllerThread;
-//    static Thread dataGeneraotrThread;
+    private boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +53,6 @@ public class MainActivity extends AppCompatActivity {
         output = findViewById(R.id.output);
         output.setMovementMethod(new ScrollingMovementMethod());
 
-
-        // automatically bind preset address and port
-        // getting preset ip address and port
-//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View vi = inflater.inflate(R.layout.activity_configuration, null);
-//        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-//        EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
-//        String ipStr = ipAddress.getText().toString();
-//        int portInt = Integer.parseInt(port.getText().toString());
-//        // bind port
-//        int status = bindFromJNI(ipStr, portInt);
-//        if (status == 0) {
-//            output.append("Binding was successful!");
-//        } else {
-//            output.append("Port is already bound or binding failed!");
-//        }
-
-
         // go to ConfigurationActivity when config button is clicked
         configButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopDataGeneratorThreadFromJNI();
+                stopControllerThreadFromJNI();
                new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -110,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("data stream has been generated!");
                     }
                 }).start();
-
+                output.append("bandwidth measurement started\n");
             }
         });
 
@@ -120,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                // stop bandwidth thread
                 stopDataGeneratorThreadFromJNI();
                 stopControllerThreadFromJNI();
+                output.append("bandwidth measurement stopped\n");
             }
         });
 
@@ -137,14 +122,14 @@ public class MainActivity extends AppCompatActivity {
                 String RTT;
                 RTT = echoFromJNI(ipStr, portInt, ++echoSequence);
 
-                output.append("\n" + RTT);
+                output.append(RTT + "\n");
                 System.out.println(RTT);
             }
         });
         staticHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                output.append("\n" + new String( msg.getData().getCharArray("feedback")));
+                output.append(new String( msg.getData().getCharArray("feedback")) + "\n");
             }
         };
 
@@ -153,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (connected) {
+                    return;
+                }
                 InteractiveView interactiveView = findViewById(R.id.interactiveView);
                 EditText name = findViewById(R.id.interactive_name);
                 LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -162,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 String ipStr = ipAddress.getText().toString();
                 int portInt = Integer.parseInt(port.getText().toString());
                 interactiveView.connect(ipStr, portInt, name.getText().toString());
+                connected = true;
             }
         });
 
@@ -179,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void feedbackMessage(String s) {
-//        Log.d("C++ feedback", "java called!");
         Message msg = new Message();
         Bundle bundle = new Bundle();
         bundle.putCharArray("feedback", s.toCharArray());
@@ -187,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         staticHandler.sendMessage(msg);
     }
 
+    @SuppressLint("DefaultLocale")
     public static void updateStat(int num_count, int num_dropped_packet, double latency) {
         counter = num_count;
         num_dropped = num_dropped_packet;
