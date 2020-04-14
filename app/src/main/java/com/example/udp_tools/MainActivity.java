@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (connected) {
+                    output.append("Connected already\n");
                     return;
                 }
                 InteractiveView interactiveView = findViewById(R.id.interactiveView);
@@ -151,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
                 int portInt = Integer.parseInt(port.getText().toString());
                 interactiveView.connect(ipStr, portInt, name.getText().toString());
                 connected = true;
+                output.append("Connected\n");
+                name.setText("");
+                name.clearFocus();
             }
         });
 
