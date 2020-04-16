@@ -39,13 +39,13 @@ public class InteractiveUser {
                 break;
             case 3: // yellow
                 r = 255;
-                g = 127;
-                b = 80;
+                g = 255;
+                b = 0;
                 break;
             case 4: // coral
-                r = 0;
-                g = 255;
-                b = 255;
+                r = 255;
+                g = 127;
+                b = 80;
                 break;
             case 5: // Magenta
                 r = 255;
