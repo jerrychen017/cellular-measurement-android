@@ -4,10 +4,10 @@
 #include "setupFeedback.h"
 
 extern "C" {
-#include "cellular-measurement/echo_client/echo_client.h"
+#include "cellular-measurement/interactive_client/echo_client.h"
 #include "cellular-measurement/bandwidth_measurement/data_generator.h"
 #include "cellular-measurement/bandwidth_measurement/controller.h"
-#include "cellular-measurement/interactive_server/interactive_client.h"
+#include "cellular-measurement/interactive_client/interactive_client.h"
 #include "logger.h"
 }
 
