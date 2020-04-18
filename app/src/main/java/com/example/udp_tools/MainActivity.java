@@ -64,6 +64,30 @@ public class MainActivity extends AppCompatActivity {
         output = findViewById(R.id.output);
         output.setMovementMethod(new ScrollingMovementMethod());
 
+        // Setup graph
+        graph = findViewById(R.id.graph);
+        bandwidthData = new LineGraphSeries<>(new DataPoint[]{});
+        graph.addSeries(bandwidthData);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(10);
+        graph.getViewport().setXAxisBoundsManual(true);
+
+        // Append to graph on message
+        // TODO float
+        staticHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Calendar calendar = Calendar.getInstance();
+                Date d = calendar.getTime();
+                double x = (d.getTime() - startTime.getTime())/1000.0;
+                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
+                output.append(bw + "\n");
+                bandwidthData.appendData(new DataPoint(x, bw),true, 1000);
+                graph.invalidate();
+            }
+        };
+
+
         // go to ConfigurationActivity when config button is clicked
         configButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
             stopDataGeneratorThreadFromJNI();
             stopControllerThreadFromJNI();
+
+            startTime = Calendar.getInstance().getTime();
+            bandwidthData.resetData(new DataPoint[]{});
 
             new Thread(new Runnable() {
             @Override
@@ -114,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         bandwidthStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,30 +171,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Setup graph
-        graph = findViewById(R.id.graph);
-        bandwidthData = new LineGraphSeries<>(new DataPoint[]{});
-        graph.addSeries(bandwidthData);
-        graph.getViewport().setMinX(0);
-        graph.getViewport().setMinX(10);
-
-        // Append to graph on message
-        // TODO float
-        staticHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Calendar calendar = Calendar.getInstance();
-                Date d = calendar.getTime();
-                if (startTime == null) {
-                    startTime = d;
-                }
-                double x = (d.getTime() - startTime.getTime())/1000.0;
-                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
-                output.append(bw + "\n");
-                bandwidthData.appendData(new DataPoint(x, bw),false, 1000);
-                graph.invalidate();
-            }
-        };
 
         // for interaction
         Button connectButton = findViewById(R.id.interactive_connect_button);
