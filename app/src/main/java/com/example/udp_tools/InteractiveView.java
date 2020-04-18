@@ -26,6 +26,7 @@ public class InteractiveView extends View {
     private int myID;
     private int maxUsers = 10;
     private InteractiveUser[] users;
+    private InteractiveUser realMyUser;
     private boolean isConnected = false;
 
     public InteractiveView(Context context) {
@@ -62,6 +63,8 @@ public class InteractiveView extends View {
             myID = id;
             // new interactive user for myself
             users[myID] = new InteractiveUser(myID ,name, 0, 0, getWidth());
+            realMyUser = new InteractiveUser(myID, "", 0, 0, getWidth());
+            realMyUser.circlePaint.setAlpha(100);
         }
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
@@ -98,8 +101,9 @@ public class InteractiveView extends View {
                         if (!userFound) {
                             users[received_id] = new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y, getWidth());
                         }
-                        invalidate();
                     }
+                    invalidate();
+
                 }
             }
         }).start();
@@ -111,13 +115,19 @@ public class InteractiveView extends View {
         super.onDraw(canvas);
         canvas.drawColor(Color.CYAN);
 
+        if (realMyUser != null) {
+            float x = realMyUser.x * getWidth();
+            float y = realMyUser.y * getHeight();
+            canvas.drawCircle(x, y, getWidth()/20, realMyUser.circlePaint);
+        }
+
         for (int i = 0; i < maxUsers; i++) {
             if (users[i] != null) {
                 InteractiveUser usr = users[i];
-                float width = usr.x * getWidth();
-                float height = usr.y * getHeight();
-                canvas.drawCircle(width, height, getWidth()/20, usr.circlePaint);
-                canvas.drawText(usr.name, width, height, usr.textPaint);
+                float x = usr.x * getWidth();
+                float y = usr.y * getHeight();
+                canvas.drawCircle(x, y, getWidth()/20, usr.circlePaint);
+                canvas.drawText(usr.name, x, y, usr.textPaint);
             }
         }
     }
@@ -129,6 +139,8 @@ public class InteractiveView extends View {
             case MotionEvent.ACTION_DOWN:
                 if (isConnected) {
                     last_sent_sequence_num++;
+                    realMyUser.x = event.getX()/getWidth();
+                    realMyUser.y = event.getY()/getHeight();
 
                     int ret = sendInteractivePacket(last_sent_sequence_num, event.getX()/getWidth(), event.getY()/getHeight());
                     if (ret > 0) { // error occurred
