@@ -16,8 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jjoe64.graphview.GraphView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     static TextView numDroppedView;
     static TextView latencyView;
     private boolean connected = false;
+
+    private GraphView graph;
+    private LineGraphSeries<DataPoint> bandwidthData;
+    private Date startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +142,29 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(RTT);
             }
         });
+
+        // Setup graph
+        graph = findViewById(R.id.graph);
+        bandwidthData = new LineGraphSeries<>(new DataPoint[]{});
+        graph.addSeries(bandwidthData);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMinX(10);
+
+        // Append to graph on message
+        // TODO float
         staticHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                output.append(new String( msg.getData().getCharArray("feedback")) + "\n");
+                Calendar calendar = Calendar.getInstance();
+                Date d = calendar.getTime();
+                if (startTime == null) {
+                    startTime = d;
+                }
+                double x = (d.getTime() - startTime.getTime())/1000.0;
+                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
+                output.append(bw + "\n");
+                bandwidthData.appendData(new DataPoint(x, bw),false, 1000);
+                graph.invalidate();
             }
         };
 

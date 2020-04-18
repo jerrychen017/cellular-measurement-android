@@ -188,6 +188,12 @@
         app:layout_constraintVertical_bias="0.873"
         app:layout_constraintWidth_percent="0.45" />
 
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/graph" />
+
     <Button
         android:id="@+id/config_button"
         android:layout_width="0dp"
