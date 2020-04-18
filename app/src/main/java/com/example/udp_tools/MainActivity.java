@@ -66,35 +66,40 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopDataGeneratorThreadFromJNI();
-                stopControllerThreadFromJNI();
-               new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View vi = inflater.inflate(R.layout.activity_configuration, null);
-                        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                        EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
-                        String ipStr = ipAddress.getText().toString();
-                        int portInt = Integer.parseInt(port.getText().toString());
+            stopDataGeneratorThreadFromJNI();
+            stopControllerThreadFromJNI();
 
-                        bandwidthFromJNI(ipStr, portInt);
+            new Thread(new Runnable() {
+            @Override
+            public void run() {
+                generateDataFromJNI();
+                System.out.println("data stream has been generated!");
+            }
+            }).start();
 
-                    }
-                }).start();
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (Exception e) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+
+            }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View vi = inflater.inflate(R.layout.activity_configuration, null);
+                    EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                    EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
+                    String ipStr = ipAddress.getText().toString();
+                    int portInt = Integer.parseInt(port.getText().toString());
+
+                    bandwidthFromJNI(ipStr, portInt);
 
                 }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        generateDataFromJNI();
-                        System.out.println("data stream has been generated!");
-                    }
-                }).start();
-                output.append("bandwidth measurement started\n");
+            }).start();
+
+
+            output.append("bandwidth measurement started\n");
             }
         });
 
