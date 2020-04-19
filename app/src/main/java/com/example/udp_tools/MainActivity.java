@@ -83,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
                 double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
                 output.append(bw + "\n");
                 bandwidthData.appendData(new DataPoint(x, bw),true, 1000);
-                graph.invalidate();
+                graph.invalidate(
+
+
+                );
             }
         };
 
@@ -103,6 +106,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
             stopDataGeneratorThreadFromJNI();
             stopControllerThreadFromJNI();
+                try {
+                    TimeUnit.MILLISECONDS.sleep(100);
+                } catch (Exception e) {
+
+                }
 
             startTime = Calendar.getInstance().getTime();
             bandwidthData.resetData(new DataPoint[]{});
