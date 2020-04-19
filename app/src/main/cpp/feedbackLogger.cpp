@@ -21,3 +21,10 @@ void sendFeedbackMessage(char* str)
     fbEnv->CallVoidMethod(fbActivity, methodId, java_str);
     fbEnv->DeleteLocalRef(java_str);
 }
+
+void sendFeedbackDouble(double d)
+{
+    jclass cls = fbEnv->GetObjectClass(fbActivity);
+    jmethodID methodId = fbEnv->GetMethodID(cls, "feedbackDouble", "(D)V");
+    fbEnv->CallVoidMethod(fbActivity, methodId, d);
+}

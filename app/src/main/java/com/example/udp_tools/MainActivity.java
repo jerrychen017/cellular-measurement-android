@@ -73,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
         graph.getViewport().setXAxisBoundsManual(true);
 
         // Append to graph on message
-        // TODO float
         staticHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 Calendar calendar = Calendar.getInstance();
                 Date d = calendar.getTime();
                 double x = (d.getTime() - startTime.getTime())/1000.0;
-                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
+//                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
+                double bw = msg.getData().getDouble("feedbackDouble");
                 output.append(bw + "\n");
                 bandwidthData.appendData(new DataPoint(x, bw),true, 1000);
                 graph.invalidate();
@@ -214,6 +214,14 @@ public class MainActivity extends AppCompatActivity {
         Message msg = new Message();
         Bundle bundle = new Bundle();
         bundle.putCharArray("feedback", s.toCharArray());
+        msg.setData(bundle);
+        staticHandler.sendMessage(msg);
+    }
+
+    public void feedbackDouble(double d) {
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putDouble("feedbackDouble", d);
         msg.setData(bundle);
         staticHandler.sendMessage(msg);
     }
