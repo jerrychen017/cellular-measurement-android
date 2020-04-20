@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 Date d = calendar.getTime();
                 double x = (d.getTime() - startTime.getTime())/1000.0;
 //                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
-                double bw = msg.getData().getDouble("feedbackDouble");
+                double bw = msg.getData().getDouble("feedbackBandwidth");
                 output.append(bw + "\n");
                 bandwidthData.appendData(new DataPoint(x, bw),true, 1000);
                 graph.invalidate(
@@ -229,10 +229,10 @@ public class MainActivity extends AppCompatActivity {
         staticHandler.sendMessage(msg);
     }
 
-    public void feedbackDouble(double d) {
+    public void sendFeedbackBandwidth(double d) {
         Message msg = new Message();
         Bundle bundle = new Bundle();
-        bundle.putDouble("feedbackDouble", d);
+        bundle.putDouble("feedbackBandwidth", d);
         msg.setData(bundle);
         staticHandler.sendMessage(msg);
     }
