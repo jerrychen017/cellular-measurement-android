@@ -22,9 +22,9 @@ void sendFeedbackMessage(char* str)
     fbEnv->DeleteLocalRef(java_str);
 }
 
-void sendFeedbackDouble(double d)
+void sendFeedbackBandwidth(double d)
 {
     jclass cls = fbEnv->GetObjectClass(fbActivity);
-    jmethodID methodId = fbEnv->GetMethodID(cls, "feedbackDouble", "(D)V");
+    jmethodID methodId = fbEnv->GetMethodID(cls, "sendFeedbackBandwidth", "(D)V");
     fbEnv->CallVoidMethod(fbActivity, methodId, d);
 }
