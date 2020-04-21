@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private LineGraphSeries<DataPoint> bandwidthData;
     private Date startTime;
 
+    private int recv_sk;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
+
         // go to ConfigurationActivity when config button is clicked
         configButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,34 +110,58 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            stopDataGeneratorThreadFromJNI();
-            stopControllerThreadFromJNI();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (Exception e) {
+//            stopDataGeneratorThreadFromJNI();
+//            stopControllerThreadFromJNI();
+                recv_sk = bindRecvBandwidthFromJNI();
 
-                }
-
-            startTime = Calendar.getInstance().getTime();
-            bandwidthData.resetData(new DataPoint[]{});
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View vi = inflater.inflate(R.layout.activity_configuration, null);
-                    EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                    EditText port = (EditText) vi.findViewById(R.id.bandwidth_port);
-                    String ipStr = ipAddress.getText().toString();
-                    int portInt = Integer.parseInt(port.getText().toString());
-
-                    bandwidthFromJNI(ipStr, portInt);
-
-                }
-            }).start();
+                // start sending
+                System.out.println("bandwidth is started!");
+                startTime = Calendar.getInstance().getTime();
+                bandwidthData.resetData(new DataPoint[]{});
 
 
-            output.append("bandwidth measurement started\n");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        startDataGeneratorFromJNI();
+                    }
+                }).start();
+
+//                try {
+//                    TimeUnit.MILLISECONDS.sleep(500);
+//                } catch (Exception e) {
+//
+//                }
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View vi = inflater.inflate(R.layout.activity_configuration, null);
+                        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                        String ipStr = ipAddress.getText().toString();
+                        startControllerFromJNI(ipStr);
+                    }
+                }).start();
+
+
+
+
+
+
+                // start handshake process
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View vi = inflater.inflate(R.layout.activity_configuration, null);
+                        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                        String ipStr = ipAddress.getText().toString();
+                        startClientAndroidFromJNI(ipStr, recv_sk);
+                    }
+                }).start();
+
             }
         });
 
@@ -223,6 +250,18 @@ public class MainActivity extends AppCompatActivity {
         staticHandler.sendMessage(msg);
     }
 
+    // call functions in C to start controller and data generator
+    public void startBandwidth() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                receiveBandwidthFromJNI(recv_sk, 1); // TODO: change 1 to a parameter in config page
+            }
+        }).start();
+        output.append("bandwidth measurement started\n");
+    }
+
     @SuppressLint("DefaultLocale")
     public static void updateStat(int num_count, int num_dropped_packet, double latency) {
         counter = num_count;
@@ -232,19 +271,15 @@ public class MainActivity extends AppCompatActivity {
         latencyView.setText("Latency: " + String.format("%.2f", latency) + " ms");
     }
 
-    public native int bandwidthFromJNI(String ip, int port);
-
-    /**
-     * Binds the port to the address
-     * @param ip destination port
-     * @param port destination address
-     * @return 1 representing success or 0 representing failure
-     */
-    public native int bindFromJNI(String ip, int port);
-
     public native String echoFromJNI(String ip, int port, int seq);
 
     public native void stopDataGeneratorThreadFromJNI();
     public native void stopControllerThreadFromJNI();
+
+    public native void startControllerFromJNI(String ip);
+    public native void startDataGeneratorFromJNI();
+    public native void startClientAndroidFromJNI(String ip, int sk);
+    public native void receiveBandwidthFromJNI(int sk, int predMode);
+    public native int bindRecvBandwidthFromJNI();
 
 }

@@ -1,4 +1,4 @@
-#include "cellular-measurement/bandwidth_measurement/feedbackLogger.h"
+#include "cellular-measurement/bidirectional/feedbackLogger.h"
 #include "setupFeedback.h"
 #include <stdio.h>
 
@@ -27,4 +27,10 @@ void sendFeedbackBandwidth(double d)
     jclass cls = fbEnv->GetObjectClass(fbActivity);
     jmethodID methodId = fbEnv->GetMethodID(cls, "sendFeedbackBandwidth", "(D)V");
     fbEnv->CallVoidMethod(fbActivity, methodId, d);
+}
+
+void javaStartBandwidth() {
+    jclass cls = fbEnv->GetObjectClass(fbActivity);
+    jmethodID methodId = fbEnv->GetMethodID(cls, "startBandwidth", "()V");
+    fbEnv->CallVoidMethod(fbActivity, methodId);
 }
