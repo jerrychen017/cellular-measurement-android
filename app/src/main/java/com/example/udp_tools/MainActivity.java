@@ -119,20 +119,6 @@ public class MainActivity extends AppCompatActivity {
             bandwidthData.resetData(new DataPoint[]{});
 
             new Thread(new Runnable() {
-            @Override
-            public void run() {
-                generateDataFromJNI();
-                System.out.println("data stream has been generated!");
-            }
-            }).start();
-
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (Exception e) {
-
-            }
-
-            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -247,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public native int bandwidthFromJNI(String ip, int port);
-    public native void generateDataFromJNI();
 
     /**
      * Binds the port to the address

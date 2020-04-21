@@ -5,8 +5,9 @@
 
 extern "C" {
 #include "cellular-measurement/interactive_client/echo_client.h"
-#include "cellular-measurement/bandwidth_measurement/data_generator.h"
-#include "cellular-measurement/bandwidth_measurement/controller.h"
+#include "cellular-measurement/bidirectional/client.h"
+#include "cellular-measurement/bidirectional/data_generator.h"
+#include "cellular-measurement/bidirectional/controller.h"
 #include "cellular-measurement/interactive_client/interactive_client.h"
 #include "logger.h"
 }
@@ -26,13 +27,12 @@ Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
 
     setupFeedback(env, activity);
-
     // convert jint to int
     int port_c = (int) port;
-//    double msec = echo_client_start(port_c, address_c.c_str(), false);
-    int result = start_controller(address_c.c_str(), port_c, true);
+
+    start_client(address_c.c_str(), 1, true); // TODO: change 1 to the parameter in Config page
 //    std::string output = "RTT is " + std::to_string(msec) + " ms";
-    return result;
+    return 0;
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -46,16 +46,6 @@ Java_com_example_udp_1tools_MainActivity_stopControllerThreadFromJNI(
         JNIEnv *env,
         jobject activity /* this */) {
     stop_controller_thread();
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_udp_1tools_MainActivity_generateDataFromJNI(
-        JNIEnv *env,
-        jobject /* this */
-        ) {
-    start_logger("data_generator"); // starting logger
-    start_generator(true);
-    return;
 }
 
 extern "C" JNIEXPORT jint JNICALL
