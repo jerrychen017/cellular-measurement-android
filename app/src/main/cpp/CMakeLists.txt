@@ -18,12 +18,16 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         native-lib.cpp
-        cellular-measurement/bandwidth_measurement/data_generator.c
-        cellular-measurement/bandwidth_measurement/controller.c
-        cellular-measurement/bandwidth_measurement/bandwidth_utils.c
-        cellular-measurement/bandwidth_measurement/sendto_dbg.c
-        cellular-measurement/interactive_server/interactive_client.c
-        cellular-measurement/echo_client/echo_client.c
+        cellular-measurement/bidirectional/data_generator.c
+        cellular-measurement/bidirectional/controller.c
+        cellular-measurement/bidirectional/bandwidth_utils.c
+        cellular-measurement/bidirectional/net_utils.c
+        cellular-measurement/bidirectional/sendto_dbg.c
+        client_android.c
+        cellular-measurement/bidirectional/send_bandwidth.c
+        cellular-measurement/bidirectional/receive_bandwidth.c
+        cellular-measurement/interactive_client/interactive_client.c
+        cellular-measurement/interactive_client/echo_client.c
         feedbackLogger.cpp
         logger.c
         )

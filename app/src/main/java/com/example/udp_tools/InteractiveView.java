@@ -26,6 +26,7 @@ public class InteractiveView extends View {
     private int myID;
     private int maxUsers = 10;
     private InteractiveUser[] users;
+    private InteractiveUser realMyUser;
     private boolean isConnected = false;
 
     public InteractiveView(Context context) {
@@ -61,7 +62,9 @@ public class InteractiveView extends View {
         } else {
             myID = id;
             // new interactive user for myself
-            users[myID] = new InteractiveUser(myID ,name, 0, 0);
+            users[myID] = new InteractiveUser(myID ,name, 0, 0, getWidth());
+            realMyUser = new InteractiveUser(myID, "", 0, 0, getWidth());
+            realMyUser.circlePaint.setAlpha(100);
         }
         // setup a thread to receive packets from the socket
         new Thread(new Runnable() {
@@ -84,7 +87,7 @@ public class InteractiveView extends View {
                             latency = pkt.latency;
                             Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
                         }
-                        InteractiveActivity.updateStat(counter, num_dropped_packet, latency);
+                        MainActivity.updateStat(counter, num_dropped_packet, latency);
                     } else { // other user
                         boolean userFound = false;
                         for (InteractiveUser usr : users) {
@@ -96,10 +99,11 @@ public class InteractiveView extends View {
                             }
                         }
                         if (!userFound) {
-                            users[received_id] = new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y);
+                            users[received_id] = new InteractiveUser(received_id, pkt.name, pkt.x, pkt.y, getWidth());
                         }
-                        invalidate();
                     }
+                    invalidate();
+
                 }
             }
         }).start();
@@ -111,11 +115,19 @@ public class InteractiveView extends View {
         super.onDraw(canvas);
         canvas.drawColor(Color.CYAN);
 
+        if (realMyUser != null) {
+            float x = realMyUser.x * getWidth();
+            float y = realMyUser.y * getHeight();
+            canvas.drawCircle(x, y, getWidth()/20, realMyUser.circlePaint);
+        }
+
         for (int i = 0; i < maxUsers; i++) {
             if (users[i] != null) {
                 InteractiveUser usr = users[i];
-                canvas.drawCircle(usr.x, usr.y, 100, usr.circlePaint);
-                canvas.drawText(usr.name, usr.x, usr.y, usr.textPaint);
+                float x = usr.x * getWidth();
+                float y = usr.y * getHeight();
+                canvas.drawCircle(x, y, getWidth()/20, usr.circlePaint);
+                canvas.drawText(usr.name, x, y, usr.textPaint);
             }
         }
     }
@@ -127,7 +139,10 @@ public class InteractiveView extends View {
             case MotionEvent.ACTION_DOWN:
                 if (isConnected) {
                     last_sent_sequence_num++;
-                    int ret = sendInteractivePacket(last_sent_sequence_num, event.getX(), event.getY());
+                    realMyUser.x = event.getX()/getWidth();
+                    realMyUser.y = event.getY()/getHeight();
+
+                    int ret = sendInteractivePacket(last_sent_sequence_num, event.getX()/getWidth(), event.getY()/getHeight());
                     if (ret > 0) { // error occurred
                         Log.d("interactive", "Error occurred when sending interactive packets");
                     }

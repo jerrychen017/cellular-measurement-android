@@ -35,4 +35,14 @@
     <string name="burst_size">Burst Size</string>
     <string name="interactive_name">Interactive Name</string>
     <string name="testname">TestName</string>
+    <string name="numer_of_dropped_packets">Numer of dropped packets</string>
+    <string name="counter">Counter</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="connect">Connect</string>
+    <string name="latency">Latency</string>
+    <string name="stop">Stop</string>
+    <string name="num_dropped">Num Dropped</string>
+    <string name="bandwidth_port">Bandwidth Port</string>
+    <string name="_4578">4578</string>
+    <string name="interactive_port">Interactive Port</string>
 </resources>

@@ -2,47 +2,97 @@
 #include <string>
 
 #include "setupFeedback.h"
+#include "cellular-measurement/bidirectional/net_include.h"
 
 extern "C" {
-#include "cellular-measurement/echo_client/echo_client.h"
-#include "cellular-measurement/bandwidth_measurement/data_generator.h"
-#include "cellular-measurement/bandwidth_measurement/controller.h"
-#include "cellular-measurement/interactive_server/interactive_client.h"
+#include "cellular-measurement/interactive_client/echo_client.h"
+#include "client_android.h"
+#include "cellular-measurement/bidirectional/data_generator.h"
+#include "cellular-measurement/bidirectional/controller.h"
+#include "cellular-measurement/bidirectional/receive_bandwidth.h"
+#include "cellular-measurement/bidirectional/net_utils.h"
+#include "cellular-measurement/interactive_client/interactive_client.h"
+#include "cellular-measurement/interactive_client/interactive_net_include.h"
 #include "logger.h"
 }
 
 extern "C" char * stdout_buffer;
 
-extern "C" JNIEXPORT jint JNICALL
-Java_com_example_udp_1tools_MainActivity_bandwidthFromJNI(
+/**
+ * Useful debugging functions:
+ * setupFeedback(env, activity);
+ * start_logger("controller"); // starting logger
+ */
+
+/**
+ * start android client and complete handshake/ack process
+ */
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_startClientAndroidFromJNI(
         JNIEnv *env,
-        jobject activity /* this */,
+        jobject activity,
         jstring ip,
-        jint port) {
-//    std::string address =  "128.220.221.21";
-    // convert jstring ip address to string
-//    start_logger("controller"); // starting logger
+        jint sk) {
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
-
-    setupFeedback(env, activity);
-
-    // convert jint to int
-    int port_c = (int) port;
-//    double msec = echo_client_start(port_c, address_c.c_str(), false);
-    int result = start_controller(address_c.c_str(), port_c, true);
-//    std::string output = "RTT is " + std::to_string(msec) + " ms";
-    return result;
+    start_logger("client_android");
+    start_client(address_c.c_str());
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_example_udp_1tools_MainActivity_generateDataFromJNI(
+Java_com_example_udp_1tools_MainActivity_startControllerFromJNI(
         JNIEnv *env,
-        jobject /* this */
-        ) {
-    start_logger("data_generator"); // starting logger
+        jobject activity,
+        jstring ip) {
+    jboolean isCopy;
+    std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
+    setupFeedbackUpload(env, activity);
+    android_start_controller(ip_cpp.c_str());
+}
+
+/**
+ * Start Data Generator
+ */
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_startDataGeneratorFromJNI(
+        JNIEnv *env,
+        jobject activity) {
     start_generator(true);
-    return;
+}
+
+/**
+ * call receive_bandwidth() in C
+ */
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_receiveBandwidthFromJNI(
+        JNIEnv *env,
+        jobject activity,
+        jstring ip,
+        jint pred_mode) {
+    jboolean isCopy;
+    std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
+    setupFeedbackDownload(env, activity);
+    android_receive_bandwidth(ip_cpp.c_str(), (int) pred_mode);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopDataGeneratorThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_data_generator_thread();
+}
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopControllerThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_controller_thread();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopReceivingThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_receiving_thread();
 }
 
 extern "C" JNIEXPORT jint JNICALL

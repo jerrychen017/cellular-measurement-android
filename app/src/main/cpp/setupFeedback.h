@@ -3,6 +3,7 @@
 
 #include <jni.h>
 #include <string>
-void setupFeedback(JNIEnv *env, jobject activity);
+void setupFeedbackUpload(JNIEnv *env, jobject activity);
+void setupFeedbackDownload(JNIEnv *env, jobject activity);
 
 #endif //UDP_TOOLS_SETUPFEEDBACK_H

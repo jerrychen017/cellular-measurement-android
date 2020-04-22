@@ -12,7 +12,7 @@ public class InteractiveUser {
     Paint textPaint;
     Paint circlePaint;
 
-    public InteractiveUser(int id, String name, float x, float y) {
+    public InteractiveUser(int id, String name, float x, float y, int canvasWidth) {
         this.id = id;
         this.name = name;
         this.x = x;
@@ -39,13 +39,13 @@ public class InteractiveUser {
                 break;
             case 3: // yellow
                 r = 255;
-                g = 127;
-                b = 80;
+                g = 255;
+                b = 0;
                 break;
             case 4: // coral
-                r = 0;
-                g = 255;
-                b = 255;
+                r = 255;
+                g = 127;
+                b = 80;
                 break;
             case 5: // Magenta
                 r = 255;
@@ -78,7 +78,8 @@ public class InteractiveUser {
 
         Paint newTextPaint= new Paint();
         newTextPaint.setARGB(255, 0,0,0);
-        newTextPaint.setTextSize(55f);
+//        newTextPaint.setTextSize(55f);
+        newTextPaint.setTextSize(canvasWidth / 25);
         newTextPaint.setAntiAlias(true);
         newTextPaint.setTextAlign(Paint.Align.CENTER);
 
