@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         graph.getViewport().setMaxX(10);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setScrollable(true);
-        graph.getViewport().setMaxY(10);
+        graph.getViewport().setMaxY(15);
         graph.getViewport().setYAxisBoundsManual(true);
 
         // Append to graph on message
