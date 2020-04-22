@@ -83,18 +83,17 @@ public class MainActivity extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 Calendar calendar = Calendar.getInstance();
                 Date d = calendar.getTime();
-                double x = (d.getTime() - startTime.getTime())/1000.0;
+                double x = (d.getTime() - startTime.getTime()) / 1000.0;
 //                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
                 double bw = msg.getData().getDouble("feedbackBandwidth");
                 output.append(bw + "\n");
-                bandwidthData.appendData(new DataPoint(x, bw),true, 1000);
+                bandwidthData.appendData(new DataPoint(x, bw), true, 1000);
                 graph.invalidate(
 
 
                 );
             }
         };
-
 
 
         // go to ConfigurationActivity when config button is clicked
@@ -110,55 +109,52 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//            stopDataGeneratorThreadFromJNI();
-//            stopControllerThreadFromJNI();
-                recv_sk = bindRecvBandwidthFromJNI();
-
+                stopDataGeneratorThreadFromJNI();
+                stopControllerThreadFromJNI();
+                stopReceivingThreadFromJNI();
                 // start sending
                 System.out.println("bandwidth is started!");
                 startTime = Calendar.getInstance().getTime();
                 bandwidthData.resetData(new DataPoint[]{});
 
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        startDataGeneratorFromJNI();
-                    }
-                }).start();
-
-//                try {
-//                    TimeUnit.MILLISECONDS.sleep(500);
-//                } catch (Exception e) {
-//
-//                }
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View vi = inflater.inflate(R.layout.activity_configuration, null);
-                        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                        String ipStr = ipAddress.getText().toString();
-                        startControllerFromJNI(ipStr);
-                    }
-                }).start();
-
-
-
-
-
-
                 // start handshake process
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View vi = inflater.inflate(R.layout.activity_configuration, null);
                         EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                         String ipStr = ipAddress.getText().toString();
                         startClientAndroidFromJNI(ipStr, recv_sk);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                View vi = inflater.inflate(R.layout.activity_configuration, null);
+                                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                                String ipStr = ipAddress.getText().toString();
+                                receiveBandwidthFromJNI(ipStr, 1);
+                            }
+                        }).start();
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                View vi = inflater.inflate(R.layout.activity_configuration, null);
+                                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
+                                String ipStr = ipAddress.getText().toString();
+                                startControllerFromJNI(ipStr);
+                            }
+                        }).start();
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                startDataGeneratorFromJNI();
+                            }
+                        }).start();
                     }
                 }).start();
 
@@ -169,9 +165,10 @@ public class MainActivity extends AppCompatActivity {
         bandwidthStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // stop bandwidth thread
+                // stop bandwidth thread
                 stopDataGeneratorThreadFromJNI();
                 stopControllerThreadFromJNI();
+                stopReceivingThreadFromJNI();
                 output.append("bandwidth measurement stopped\n");
             }
         });
@@ -180,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 TextView output = findViewById(R.id.output);
-                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View vi = inflater.inflate(R.layout.activity_configuration, null);
                 EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                 EditText port = (EditText) vi.findViewById(R.id.interactive_port);
@@ -207,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 InteractiveView interactiveView = findViewById(R.id.interactiveView);
                 EditText name = findViewById(R.id.interactive_name);
-                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View vi = inflater.inflate(R.layout.activity_configuration, null);
                 EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                 EditText port = (EditText) vi.findViewById(R.id.interactive_port);
@@ -221,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        counterView =  findViewById(R.id.counter_view);
+        counterView = findViewById(R.id.counter_view);
         numDroppedView = findViewById(R.id.num_dropped_view);
         latencyView = findViewById(R.id.latency_view);
 
@@ -251,16 +248,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // call functions in C to start controller and data generator
-    public void startBandwidth() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                receiveBandwidthFromJNI(recv_sk, 1); // TODO: change 1 to a parameter in config page
-            }
-        }).start();
-        output.append("bandwidth measurement started\n");
-    }
+//    public void startBandwidth() {
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                receiveBandwidthFromJNI(recv_sk, 1); // TODO: change 1 to a parameter in config page
+//            }
+//        }).start();
+//        output.append("bandwidth measurement started\n");
+//    }
 
     @SuppressLint("DefaultLocale")
     public static void updateStat(int num_count, int num_dropped_packet, double latency) {
@@ -274,12 +271,17 @@ public class MainActivity extends AppCompatActivity {
     public native String echoFromJNI(String ip, int port, int seq);
 
     public native void stopDataGeneratorThreadFromJNI();
+
     public native void stopControllerThreadFromJNI();
 
+    public native void stopReceivingThreadFromJNI();
+
     public native void startControllerFromJNI(String ip);
+
     public native void startDataGeneratorFromJNI();
+
     public native void startClientAndroidFromJNI(String ip, int sk);
-    public native void receiveBandwidthFromJNI(int sk, int predMode);
-    public native int bindRecvBandwidthFromJNI();
+
+    public native void receiveBandwidthFromJNI(String ip, int predMode);
 
 }
