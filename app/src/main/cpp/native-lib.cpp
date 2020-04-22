@@ -46,7 +46,7 @@ Java_com_example_udp_1tools_MainActivity_startControllerFromJNI(
         jstring ip) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
-    setupFeedback(env, activity);
+    setupFeedbackUpload(env, activity);
     android_start_controller(ip_cpp.c_str());
 }
 
@@ -71,6 +71,7 @@ Java_com_example_udp_1tools_MainActivity_receiveBandwidthFromJNI(
         jint pred_mode) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
+    setupFeedbackDownload(env, activity);
     android_receive_bandwidth(ip_cpp.c_str(), (int) pred_mode);
 }
 

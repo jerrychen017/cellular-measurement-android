@@ -2,35 +2,37 @@
 #include "setupFeedback.h"
 #include <stdio.h>
 
-JNIEnv *fbEnv;
-jobject fbActivity;
+static JNIEnv *upEnv;
+static jobject upActivity;
+static JNIEnv *downEnv;
+static jobject downActivity;
 
-void setupFeedback(JNIEnv *env, jobject activity)
+void setupFeedbackUpload(JNIEnv *env, jobject activity)
 {
     printf("setupfeedback called\n");
 
-    fbEnv = env;
-    fbActivity = activity;
+    upEnv = env;
+    upActivity = activity;
 }
 
-void sendFeedbackMessage(char* str)
+void setupFeedbackDownload(JNIEnv *env, jobject activity)
 {
-    jclass cls = fbEnv->GetObjectClass(fbActivity);
-    jstring java_str = fbEnv->NewStringUTF(std::string(str).c_str());
-    jmethodID methodId = fbEnv->GetMethodID(cls, "feedbackMessage", "(Ljava/lang/String;)V");
-    fbEnv->CallVoidMethod(fbActivity, methodId, java_str);
-    fbEnv->DeleteLocalRef(java_str);
+    printf("setupfeedback called\n");
+
+    downEnv = env;
+    downActivity = activity;
 }
 
-void sendFeedbackBandwidth(double d)
+void sendFeedbackUpload(double d)
 {
-    jclass cls = fbEnv->GetObjectClass(fbActivity);
-    jmethodID methodId = fbEnv->GetMethodID(cls, "sendFeedbackBandwidth", "(D)V");
-    fbEnv->CallVoidMethod(fbActivity, methodId, d);
+    jclass cls = upEnv->GetObjectClass(upActivity);
+    jmethodID methodId = upEnv->GetMethodID(cls, "sendFeedbackUpload", "(D)V");
+    upEnv->CallVoidMethod(upActivity, methodId, d);
 }
 
-void javaStartBandwidth() {
-    jclass cls = fbEnv->GetObjectClass(fbActivity);
-    jmethodID methodId = fbEnv->GetMethodID(cls, "startBandwidth", "()V");
-    fbEnv->CallVoidMethod(fbActivity, methodId);
+void sendFeedbackDownload(double d)
+{
+    jclass cls = downEnv->GetObjectClass(downActivity);
+    jmethodID methodId = downEnv->GetMethodID(cls, "sendFeedbackDownload", "(D)V");
+    downEnv->CallVoidMethod(downActivity, methodId, d);
 }

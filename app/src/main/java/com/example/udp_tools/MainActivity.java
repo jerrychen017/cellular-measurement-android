@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,16 +18,39 @@ import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+    static class GraphHandler extends Handler {
+        private LineGraphSeries<DataPoint> data;
+        private GraphView graph;
+        private String fieldName;
+        private Date startTime;
+        public GraphHandler(LineGraphSeries<DataPoint> data, GraphView graph, String fieldName) {
+            this.data = data;
+            this.graph = graph;
+            this.fieldName = fieldName;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Calendar calendar = Calendar.getInstance();
+            Date d = calendar.getTime();
+            double x = (d.getTime() - startTime.getTime()) / 1000.0;
+            double bw = msg.getData().getDouble(fieldName);
+            data.appendData(new DataPoint(x, bw), true, 1000);
+            graph.invalidate();
+        }
+
+        public void setStartTime(Date time) {
+            startTime = time;
+        }
+    }
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -35,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static int echoSequence = 0;
-    static Handler staticHandler;
+    static GraphHandler uploadHandler;
+    static GraphHandler downloadHandler;
     TextView output;
 
     // variables for interaction
@@ -47,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean connected = false;
 
     private GraphView graph;
-    private LineGraphSeries<DataPoint> bandwidthData;
+    private LineGraphSeries<DataPoint> uploadData;
+    private LineGraphSeries<DataPoint> downloadData;
     private Date startTime;
 
     private int recv_sk;
@@ -68,8 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup graph
         graph = findViewById(R.id.graph);
-        bandwidthData = new LineGraphSeries<>(new DataPoint[]{});
-        graph.addSeries(bandwidthData);
+        uploadData = new LineGraphSeries<>(new DataPoint[]{});
+        downloadData = new LineGraphSeries<>(new DataPoint[]{});
+        graph.addSeries(uploadData);
+        graph.addSeries(downloadData);
+        downloadData.setColor(Color.BLUE);
+        uploadData.setColor(Color.RED);
         graph.getViewport().setMinX(0);
         graph.getViewport().setMaxX(10);
         graph.getViewport().setXAxisBoundsManual(true);
@@ -78,23 +107,8 @@ public class MainActivity extends AppCompatActivity {
         graph.getViewport().setYAxisBoundsManual(true);
 
         // Append to graph on message
-        staticHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Calendar calendar = Calendar.getInstance();
-                Date d = calendar.getTime();
-                double x = (d.getTime() - startTime.getTime()) / 1000.0;
-//                double bw =  Double.parseDouble(new String( msg.getData().getCharArray("feedback")));
-                double bw = msg.getData().getDouble("feedbackBandwidth");
-                output.append(bw + "\n");
-                bandwidthData.appendData(new DataPoint(x, bw), true, 1000);
-                graph.invalidate(
-
-
-                );
-            }
-        };
-
+        uploadHandler = new GraphHandler(uploadData, graph, "feedbackUpload");
+        downloadHandler = new GraphHandler(downloadData, graph, "feedbackDownload");
 
         // go to ConfigurationActivity when config button is clicked
         configButton.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +129,10 @@ public class MainActivity extends AppCompatActivity {
                 // start sending
                 System.out.println("bandwidth is started!");
                 startTime = Calendar.getInstance().getTime();
-                bandwidthData.resetData(new DataPoint[]{});
+                uploadHandler.setStartTime(startTime);
+                downloadHandler.setStartTime(startTime);
+                uploadData.resetData(new DataPoint[]{});
+                downloadData.resetData(new DataPoint[]{});
 
                 // start handshake process
                 new Thread(new Runnable() {
@@ -227,37 +244,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        staticHandler = null;
+        uploadHandler = null;
     }
 
-
-    public void feedbackMessage(String s) {
+    public void sendFeedbackUpload(double d) {
         Message msg = new Message();
         Bundle bundle = new Bundle();
-        bundle.putCharArray("feedback", s.toCharArray());
+        bundle.putDouble("feedbackUpload", d);
         msg.setData(bundle);
-        staticHandler.sendMessage(msg);
+        uploadHandler.sendMessage(msg);
     }
 
-    public void sendFeedbackBandwidth(double d) {
+    public void sendFeedbackDownload(double d) {
         Message msg = new Message();
         Bundle bundle = new Bundle();
-        bundle.putDouble("feedbackBandwidth", d);
+        bundle.putDouble("feedbackDownload", d);
         msg.setData(bundle);
-        staticHandler.sendMessage(msg);
+        downloadHandler.sendMessage(msg);
     }
-
-    // call functions in C to start controller and data generator
-//    public void startBandwidth() {
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                receiveBandwidthFromJNI(recv_sk, 1); // TODO: change 1 to a parameter in config page
-//            }
-//        }).start();
-//        output.append("bandwidth measurement started\n");
-//    }
 
     @SuppressLint("DefaultLocale")
     public static void updateStat(int num_count, int num_dropped_packet, double latency) {

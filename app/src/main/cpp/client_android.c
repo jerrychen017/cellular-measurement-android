@@ -75,6 +75,7 @@ void start_client(const char *address)
                     printf("got send ack\n");
                     got_send_ack = true;
                     close(client_send_sk);
+                    FD_CLR(client_send_sk, &mask);
                 }
             }
             if (FD_ISSET(client_recv_sk, &read_mask))
@@ -92,6 +93,7 @@ void start_client(const char *address)
                     printf("got recv ack\n");
                     got_recv_ack = true;
                     close(client_recv_sk);
+                    FD_CLR(client_recv_sk, &mask);
                 }
             }
         }
