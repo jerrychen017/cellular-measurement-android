@@ -53,8 +53,8 @@ void start_client(const char *address)
     for (;;)
     {
         read_mask = mask;
-        timeout.tv_sec = TIMEOUT_SEC;
-        timeout.tv_usec = TIMEOUT_USEC;
+        timeout.tv_sec = 1;
+        timeout.tv_usec = 0;
 
         num = select(FD_SETSIZE, &read_mask, NULL, NULL, &timeout);
 
@@ -74,6 +74,7 @@ void start_client(const char *address)
                 {
                     printf("got send ack\n");
                     got_send_ack = true;
+                    close(client_send_sk);
                 }
             }
             if (FD_ISSET(client_recv_sk, &read_mask))
@@ -90,6 +91,7 @@ void start_client(const char *address)
                 {
                     printf("got recv ack\n");
                     got_recv_ack = true;
+                    close(client_recv_sk);
                 }
             }
         }
@@ -105,13 +107,11 @@ void start_client(const char *address)
                        (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
             sendto_dbg(client_recv_sk, &ack_pkt, sizeof(packet_header), 0,
                        (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
+            printf("resending NETWORK_START\n");
         }
 
         if (got_recv_ack && got_send_ack)
         {
-            //
-            close(client_recv_sk);
-            close(client_send_sk);
             return;
         }
     }
