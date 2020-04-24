@@ -32,8 +32,6 @@ void start_client(const char *address, struct parameters params)
     printf("size of double is %d\n", sizeof(double));
     printf("size of bool is %d\n", sizeof(bool));
 
-
-
     int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
     int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
 
@@ -53,6 +51,7 @@ void start_client(const char *address, struct parameters params)
     data_packet data_pkt;
     struct sockaddr_in from_addr;
     socklen_t from_len = sizeof(from_addr);
+    char buf[sizeof(start_pkt)]; //buffer to serialize struct
 
     bool got_send_ack = false;
     bool got_recv_ack = false;
@@ -61,9 +60,41 @@ void start_client(const char *address, struct parameters params)
     start_pkt.type = NETWORK_START;
     start_pkt.params = params;
 
-    sendto_dbg(client_send_sk, &start_pkt, sizeof(start_packet), 0,
+    // need to manually serialize to bypass default padding
+    int currentIdx = 0;
+    memcpy(buf + currentIdx, &start_pkt.type, sizeof(start_pkt.type));
+    currentIdx += sizeof(start_pkt.type);
+    memcpy(buf + currentIdx , &start_pkt.params.burst_size, sizeof(start_pkt.params.burst_size));
+    currentIdx += sizeof(start_pkt.params.burst_size);
+    memcpy(buf + currentIdx , &start_pkt.params.interval_size, sizeof(start_pkt.params.interval_size));
+    currentIdx += sizeof(start_pkt.params.interval_size);
+    memcpy(buf + currentIdx , &start_pkt.params.grace_period, sizeof(start_pkt.params.grace_period));
+    currentIdx += sizeof(start_pkt.params.grace_period);
+    memcpy(buf + currentIdx , &start_pkt.params.instant_burst, sizeof(start_pkt.params.instant_burst));
+    currentIdx += sizeof(start_pkt.params.instant_burst);
+    memcpy(buf + currentIdx , &start_pkt.params.burst_factor, sizeof(start_pkt.params.burst_factor));
+    currentIdx += sizeof(start_pkt.params.burst_factor);
+    memcpy(buf + currentIdx, &start_pkt.params.interval_time, sizeof(start_pkt.params.interval_time));
+    currentIdx += sizeof(start_pkt.params.interval_time);
+    memcpy(buf + currentIdx, &start_pkt.params.min_speed, sizeof(start_pkt.params.min_speed));
+    currentIdx += sizeof(start_pkt.params.min_speed);
+    memcpy(buf + currentIdx , &start_pkt.params.max_speed, sizeof(start_pkt.params.max_speed));
+    currentIdx += sizeof(start_pkt.params.max_speed);
+    memcpy(buf + currentIdx , &start_pkt.params.start_speed, sizeof(start_pkt.params.start_speed));
+    currentIdx += sizeof(start_pkt.params.start_speed);
+
+//    char new_buf[4];
+//    char new_buf2[4];
+//    char double_buf[8];
+//    memcpy(new_buf, buf, sizeof(start_pkt.type));
+//    printf("THE TYPE IS %d\n",*((int*)new_buf));
+//    memcpy(new_buf2, buf + sizeof(start_pkt.type), sizeof(start_pkt.params.burst_size));
+//    printf("THE BURST IS %d\n",*((int*)new_buf2));
+//    memcpy(double_buf, buf + sizeof(start_pkt.type) + sizeof(start_pkt.type), sizeof(start_pkt.params.interval_time));
+//    printf("THE BURST IS %f\n",*((double*)double_buf));
+    sendto_dbg(client_send_sk, &buf, sizeof(buf), 0,
                (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
-    sendto_dbg(client_recv_sk, &start_pkt, sizeof(start_packet), 0,
+    sendto_dbg(client_recv_sk, &buf, sizeof(buf), 0,
                (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
 
     for (;;)
@@ -136,12 +167,12 @@ void start_client(const char *address, struct parameters params)
 
             // re-send NETWORK_START packets when timeout
             if (!got_send_ack) {
-                sendto_dbg(client_send_sk, &start_pkt, sizeof(start_packet), 0,
+                sendto_dbg(client_send_sk, &buf, sizeof(buf), 0,
                            (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
             }
 
             if (!got_recv_ack) {
-                sendto_dbg(client_recv_sk, &start_pkt, sizeof(start_packet), 0,
+                sendto_dbg(client_recv_sk, &buf, sizeof(buf), 0,
                            (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
             }
 
