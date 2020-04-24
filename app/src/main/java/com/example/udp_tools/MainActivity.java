@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -112,7 +113,38 @@ public class MainActivity extends AppCompatActivity {
         downloadHandler = new GraphHandler(downloadData, graph, "feedbackDownload");
 
         // initialize parameters
-        params = new Parameters(10, 500, 0, 0, 2, 0.1, 10, 1, 10);
+        SharedPreferences prefs = getSharedPreferences("cellular-measurement", MODE_PRIVATE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View vi = inflater.inflate(R.layout.activity_configuration, null);
+
+        String burstSizeStr = prefs.getString("burstSize", ((EditText) vi.findViewById(R.id.burst_size)).getText().toString());
+        int burstSize = Integer.parseInt(burstSizeStr);
+
+        String intervalSizeStr = prefs.getString("intervalSize", ((EditText) vi.findViewById(R.id.interval_size)).getText().toString());
+        int intervalSize = Integer.parseInt(intervalSizeStr);
+
+        String intervalTimeStr = prefs.getString("intervalTime", ((EditText) vi.findViewById(R.id.interval_time)).getText().toString());
+        double intervalTime = Double.parseDouble(intervalTimeStr);
+
+        String instantBurstStr = prefs.getString("instantBurst", ((EditText) vi.findViewById(R.id.instant_burst)).getText().toString());
+        int instantBurst = Integer.parseInt(instantBurstStr);
+
+        String burstFactorStr = prefs.getString("burstFactor", ((EditText) vi.findViewById(R.id.burst_factor)).getText().toString());
+        int burstFactor = Integer.parseInt(burstFactorStr);
+
+        String minSpeedStr = prefs.getString("minSpeed", ((EditText) vi.findViewById(R.id.min_speed)).getText().toString());
+        double minSpeed = Double.parseDouble(minSpeedStr);
+
+        String maxSpeedStr = prefs.getString("maxSpeed", ((EditText) vi.findViewById(R.id.max_speed)).getText().toString());
+        double maxSpeed = Double.parseDouble(maxSpeedStr);
+
+        String startSpeedStr = prefs.getString("startSpeed", ((EditText) vi.findViewById(R.id.start_speed)).getText().toString());
+        double startSpeed = Double.parseDouble(startSpeedStr);
+
+        String gracePeriodStr = prefs.getString("gracePeriod", ((EditText) vi.findViewById(R.id.grace_period)).getText().toString());
+        int gracePeriod = Integer.parseInt(gracePeriodStr);
+
+        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod);
 
 
         // go to ConfigurationActivity when config button is clicked

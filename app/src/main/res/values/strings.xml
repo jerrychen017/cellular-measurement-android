@@ -46,4 +46,11 @@
     <string name="_4578">4578</string>
     <string name="interactive_port">Interactive Port</string>
     <string name="_4577">4577</string>
+    <string name="_0">0</string>
+    <string name="instant_burst">Instant Burst</string>
+    <string name="grace_period">Grace Period</string>
+    <string name="start_speed_mbps">Start Speed (Mbps)</string>
+    <string name="download_port">Download Port</string>
+    <string name="interval_time">Interval Time</string>
+    <string name="_500">500</string>
 </resources>

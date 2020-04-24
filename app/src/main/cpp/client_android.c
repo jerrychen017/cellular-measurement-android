@@ -91,12 +91,14 @@ void start_client(const char *address, struct parameters params)
                     printf("got send ack\n");
                     got_send_ack = true;
                     close(client_send_sk);
+                    FD_CLR(client_send_sk, &mask);
                 }
 
                 if (data_pkt.hdr.type == NETWORK_BUSY)
                 {
                     printf("server is busy\n");
                     close(client_send_sk);
+                    close(client_recv_sk);
                     return;
                 }
             }
@@ -122,6 +124,7 @@ void start_client(const char *address, struct parameters params)
                 {
                     printf("server is busy\n");
                     close(client_recv_sk);
+                    close(client_send_sk);
                     return;
                 }
             }
@@ -143,6 +146,11 @@ void start_client(const char *address, struct parameters params)
             }
 
             printf("re-sending NETWORK_START\n");
+
+            if (num < 0) {
+                perror("num is negative\n");
+                exit(1);
+            }
         }
 
         if (got_recv_ack && got_send_ack)
