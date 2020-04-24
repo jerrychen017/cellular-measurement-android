@@ -24,6 +24,33 @@ extern "C" char * stdout_buffer;
  * start_logger("controller"); // starting logger
  */
 
+struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
+    jclass paramsClass = env->FindClass("com/example/udp_tools/Parameters");;
+    struct parameters params;
+    jmethodID getBurstSize = env->GetMethodID(paramsClass, "getBurstSize", "()I");
+    jmethodID getIntervalSize = env->GetMethodID(paramsClass, "getIntervalSize", "()I");
+    jmethodID getIntervalTime = env->GetMethodID(paramsClass, "getIntervalTime", "()D");
+    jmethodID getInstantBurst = env->GetMethodID(paramsClass, "getInstantBurst", "()I");
+    jmethodID getBurstFactor = env->GetMethodID(paramsClass, "getBurstFactor", "()I");
+    jmethodID getMinSpeed = env->GetMethodID(paramsClass, "getMinSpeed", "()D");
+    jmethodID getMaxSpeed = env->GetMethodID(paramsClass, "getMaxSpeed", "()D");
+    jmethodID getStartSpeed = env->GetMethodID(paramsClass, "getStartSpeed", "()D");
+    jmethodID getGracePeriod = env->GetMethodID(paramsClass, "getGracePeriod", "()I");
+
+    params.burst_size = env->CallIntMethod(paramsObj, getBurstSize);
+    params.interval_size = env->CallIntMethod(paramsObj, getIntervalSize);
+    params.interval_time = env->CallDoubleMethod(paramsObj, getIntervalTime);
+    params.instant_burst = env->CallIntMethod(paramsObj, getInstantBurst);
+    params.burst_factor = env->CallIntMethod(paramsObj, getBurstFactor);
+    params.min_speed = env->CallDoubleMethod(paramsObj, getMinSpeed);
+    params.max_speed = env->CallDoubleMethod(paramsObj, getMaxSpeed);
+    params.start_speed = env->CallDoubleMethod(paramsObj, getStartSpeed);
+    params.grace_period = env->CallIntMethod(paramsObj, getGracePeriod);
+
+    return params;
+}
+
+
 /**
  * start android client and complete handshake/ack process
  */
@@ -32,22 +59,29 @@ Java_com_example_udp_1tools_MainActivity_startClientAndroidFromJNI(
         JNIEnv *env,
         jobject activity,
         jstring ip,
-        jint sk) {
+        jobject paramsObj) {
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     start_logger("client_android");
-    start_client(address_c.c_str());
+
+    struct parameters params = get_parameters(env, paramsObj);
+
+    start_client(address_c.c_str(), params);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_udp_1tools_MainActivity_startControllerFromJNI(
         JNIEnv *env,
         jobject activity,
-        jstring ip) {
+        jstring ip,
+        jobject paramsObj) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
     setupFeedbackUpload(env, activity);
-    android_start_controller(ip_cpp.c_str());
+
+    struct parameters params = get_parameters(env, paramsObj);
+
+    android_start_controller(ip_cpp.c_str(), params);
 }
 
 /**
@@ -68,11 +102,15 @@ Java_com_example_udp_1tools_MainActivity_receiveBandwidthFromJNI(
         JNIEnv *env,
         jobject activity,
         jstring ip,
-        jint pred_mode) {
+        jint pred_mode,
+        jobject paramsObj) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
     setupFeedbackDownload(env, activity);
-    android_receive_bandwidth(ip_cpp.c_str(), (int) pred_mode);
+
+    struct parameters params = get_parameters(env, paramsObj);
+
+    android_receive_bandwidth(ip_cpp.c_str(), (int) pred_mode, params);
 }
 
 extern "C" JNIEXPORT void JNICALL

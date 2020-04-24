@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         private GraphView graph;
         private String fieldName;
         private Date startTime;
+
         public GraphHandler(LineGraphSeries<DataPoint> data, GraphView graph, String fieldName) {
             this.data = data;
             this.graph = graph;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private LineGraphSeries<DataPoint> downloadData;
     private Date startTime;
 
-    private int recv_sk;
+    private Parameters params; // bandwidth parameters
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         uploadHandler = new GraphHandler(uploadData, graph, "feedbackUpload");
         downloadHandler = new GraphHandler(downloadData, graph, "feedbackDownload");
 
+        // initialize parameters
+        params = new Parameters(10, 500, 0, 0, 2, 0.1, 10, 1, 10);
+
+
         // go to ConfigurationActivity when config button is clicked
         configButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                         View vi = inflater.inflate(R.layout.activity_configuration, null);
                         EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                         String ipStr = ipAddress.getText().toString();
-                        startClientAndroidFromJNI(ipStr, recv_sk);
+                        startClientAndroidFromJNI(ipStr, params);
 
                         new Thread(new Runnable() {
                             @Override
@@ -151,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                                 View vi = inflater.inflate(R.layout.activity_configuration, null);
                                 EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                                 String ipStr = ipAddress.getText().toString();
-                                receiveBandwidthFromJNI(ipStr, 1);
+                                receiveBandwidthFromJNI(ipStr, 1, params);
                             }
                         }).start();
 
@@ -162,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                                 View vi = inflater.inflate(R.layout.activity_configuration, null);
                                 EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                                 String ipStr = ipAddress.getText().toString();
-                                startControllerFromJNI(ipStr);
+                                startControllerFromJNI(ipStr, params);
                             }
                         }).start();
 
@@ -238,7 +243,6 @@ public class MainActivity extends AppCompatActivity {
         counterView = findViewById(R.id.counter_view);
         numDroppedView = findViewById(R.id.num_dropped_view);
         latencyView = findViewById(R.id.latency_view);
-
     }
 
     @Override
@@ -280,12 +284,12 @@ public class MainActivity extends AppCompatActivity {
 
     public native void stopReceivingThreadFromJNI();
 
-    public native void startControllerFromJNI(String ip);
+    public native void startControllerFromJNI(String ip, Parameters params);
 
     public native void startDataGeneratorFromJNI();
 
-    public native void startClientAndroidFromJNI(String ip, int sk);
+    public native void startClientAndroidFromJNI(String ip, Parameters params);
 
-    public native void receiveBandwidthFromJNI(String ip, int predMode);
+    public native void receiveBandwidthFromJNI(String ip, int predMode, Parameters params);
 
 }
