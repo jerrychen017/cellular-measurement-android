@@ -82,16 +82,7 @@ void start_client(const char *address, struct parameters params)
     offset += sizeof(start_pkt.params.max_speed);
     memcpy(buf + offset , &start_pkt.params.start_speed, sizeof(start_pkt.params.start_speed));
     offset += sizeof(start_pkt.params.start_speed);
-
-//    char new_buf[4];
-//    char new_buf2[4];
-//    char double_buf[8];
-//    memcpy(new_buf, buf, sizeof(start_pkt.type));
-//    printf("THE TYPE IS %d\n",*((int*)new_buf));
-//    memcpy(new_buf2, buf + sizeof(start_pkt.type), sizeof(start_pkt.params.burst_size));
-//    printf("THE BURST IS %d\n",*((int*)new_buf2));
-//    memcpy(double_buf, buf + sizeof(start_pkt.type) + sizeof(start_pkt.type), sizeof(start_pkt.params.interval_time));
-//    printf("THE BURST IS %f\n",*((double*)double_buf));
+    
     sendto_dbg(client_send_sk, &buf, sizeof(buf), 0,
                (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
     sendto_dbg(client_recv_sk, &buf, sizeof(buf), 0,
