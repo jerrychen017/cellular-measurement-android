@@ -61,27 +61,27 @@ void start_client(const char *address, struct parameters params)
     start_pkt.params = params;
 
     // need to manually serialize to bypass default padding
-    int currentIdx = 0;
-    memcpy(buf + currentIdx, &start_pkt.type, sizeof(start_pkt.type));
-    currentIdx += sizeof(start_pkt.type);
-    memcpy(buf + currentIdx , &start_pkt.params.burst_size, sizeof(start_pkt.params.burst_size));
-    currentIdx += sizeof(start_pkt.params.burst_size);
-    memcpy(buf + currentIdx , &start_pkt.params.interval_size, sizeof(start_pkt.params.interval_size));
-    currentIdx += sizeof(start_pkt.params.interval_size);
-    memcpy(buf + currentIdx , &start_pkt.params.grace_period, sizeof(start_pkt.params.grace_period));
-    currentIdx += sizeof(start_pkt.params.grace_period);
-    memcpy(buf + currentIdx , &start_pkt.params.instant_burst, sizeof(start_pkt.params.instant_burst));
-    currentIdx += sizeof(start_pkt.params.instant_burst);
-    memcpy(buf + currentIdx , &start_pkt.params.burst_factor, sizeof(start_pkt.params.burst_factor));
-    currentIdx += sizeof(start_pkt.params.burst_factor);
-    memcpy(buf + currentIdx, &start_pkt.params.interval_time, sizeof(start_pkt.params.interval_time));
-    currentIdx += sizeof(start_pkt.params.interval_time);
-    memcpy(buf + currentIdx, &start_pkt.params.min_speed, sizeof(start_pkt.params.min_speed));
-    currentIdx += sizeof(start_pkt.params.min_speed);
-    memcpy(buf + currentIdx , &start_pkt.params.max_speed, sizeof(start_pkt.params.max_speed));
-    currentIdx += sizeof(start_pkt.params.max_speed);
-    memcpy(buf + currentIdx , &start_pkt.params.start_speed, sizeof(start_pkt.params.start_speed));
-    currentIdx += sizeof(start_pkt.params.start_speed);
+    int offset= 0;
+    memcpy(buf + offset, &start_pkt.type, sizeof(start_pkt.type));
+    offset += sizeof(start_pkt.type);
+    memcpy(buf + offset , &start_pkt.params.burst_size, sizeof(start_pkt.params.burst_size));
+    offset += sizeof(start_pkt.params.burst_size);
+    memcpy(buf + offset , &start_pkt.params.interval_size, sizeof(start_pkt.params.interval_size));
+    offset += sizeof(start_pkt.params.interval_size);
+    memcpy(buf + offset , &start_pkt.params.grace_period, sizeof(start_pkt.params.grace_period));
+    offset += sizeof(start_pkt.params.grace_period);
+    memcpy(buf + offset , &start_pkt.params.instant_burst, sizeof(start_pkt.params.instant_burst));
+    offset += sizeof(start_pkt.params.instant_burst);
+    memcpy(buf + offset , &start_pkt.params.burst_factor, sizeof(start_pkt.params.burst_factor));
+    offset += sizeof(start_pkt.params.burst_factor);
+    memcpy(buf + offset, &start_pkt.params.interval_time, sizeof(start_pkt.params.interval_time));
+    offset += sizeof(start_pkt.params.interval_time);
+    memcpy(buf + offset, &start_pkt.params.min_speed, sizeof(start_pkt.params.min_speed));
+    offset += sizeof(start_pkt.params.min_speed);
+    memcpy(buf + offset , &start_pkt.params.max_speed, sizeof(start_pkt.params.max_speed));
+    offset += sizeof(start_pkt.params.max_speed);
+    memcpy(buf + offset , &start_pkt.params.start_speed, sizeof(start_pkt.params.start_speed));
+    offset += sizeof(start_pkt.params.start_speed);
 
 //    char new_buf[4];
 //    char new_buf2[4];
