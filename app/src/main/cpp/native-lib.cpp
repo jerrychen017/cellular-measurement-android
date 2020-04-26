@@ -110,7 +110,7 @@ Java_com_example_udp_1tools_MainActivity_receiveBandwidthFromJNI(
 
     struct parameters params = get_parameters(env, paramsObj);
 
-    android_receive_bandwidth(ip_cpp.c_str(), (int) pred_mode, params);
+    android_receive_bandwidth(ip_cpp.c_str(), params);
 }
 
 extern "C" JNIEXPORT void JNICALL
