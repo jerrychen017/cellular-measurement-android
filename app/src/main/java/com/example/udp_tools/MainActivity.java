@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         String gracePeriodStr = prefs.getString("gracePeriod", ((EditText) vi.findViewById(R.id.grace_period)).getText().toString());
         int gracePeriod = Integer.parseInt(gracePeriodStr);
 
-        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod);
+        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod, 1, 0.1, 0.95 );
 
 
         // go to ConfigurationActivity when config button is clicked

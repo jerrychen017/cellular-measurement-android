@@ -10,8 +10,11 @@ public class Parameters {
     double maxSpeed;
     double startSpeed;
     int gracePeriod;
+    int predMode;
+    double alpha;
+    double threshold;
 
-    public Parameters(int burstSize, int intervalSize, double intervalTime, int instantBurst, int burstFactor, double minSpeed, double maxSpeed, double startSpeed, int gracePeriod) {
+    public Parameters(int burstSize, int intervalSize, double intervalTime, int instantBurst, int burstFactor, double minSpeed, double maxSpeed, double startSpeed, int gracePeriod, int predMode, double alpha, double threshold) {
         this.burstSize = burstSize;
         this.intervalSize = intervalSize;
         this.intervalTime = intervalTime;
@@ -21,6 +24,9 @@ public class Parameters {
         this.maxSpeed = maxSpeed;
         this.startSpeed = startSpeed;
         this.gracePeriod = gracePeriod;
+        this.predMode = predMode;
+        this.alpha = alpha;
+        this.threshold = threshold;
     }
 
     public int getBurstSize() {
@@ -57,5 +63,17 @@ public class Parameters {
 
     public int getGracePeriod() {
         return gracePeriod;
+    }
+
+    public int getPredMode() {
+        return predMode;
+    }
+
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public double getThreshold() {
+        return threshold;
     }
 }

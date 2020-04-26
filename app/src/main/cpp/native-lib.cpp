@@ -36,6 +36,9 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
     jmethodID getMaxSpeed = env->GetMethodID(paramsClass, "getMaxSpeed", "()D");
     jmethodID getStartSpeed = env->GetMethodID(paramsClass, "getStartSpeed", "()D");
     jmethodID getGracePeriod = env->GetMethodID(paramsClass, "getGracePeriod", "()I");
+    jmethodID getPredMode = env->GetMethodID(paramsClass, "getPredMode", "()I");
+    jmethodID getAlpha = env->GetMethodID(paramsClass, "getAlpha", "()D");
+    jmethodID getThreshold = env->GetMethodID(paramsClass, "getThreshold", "()D");
 
     params.burst_size = env->CallIntMethod(paramsObj, getBurstSize);
     params.interval_size = env->CallIntMethod(paramsObj, getIntervalSize);
@@ -46,6 +49,9 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
     params.max_speed = env->CallDoubleMethod(paramsObj, getMaxSpeed);
     params.start_speed = env->CallDoubleMethod(paramsObj, getStartSpeed);
     params.grace_period = env->CallIntMethod(paramsObj, getGracePeriod);
+    params.pred_mode = env->CallIntMethod(paramsObj, getPredMode);
+    params.alpha = env->CallDoubleMethod(paramsObj, getAlpha);
+    params.threshold = env->CallDoubleMethod(paramsObj, getThreshold);
 
     return params;
 }
