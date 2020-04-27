@@ -5,7 +5,7 @@ public class Parameters {
     int intervalSize; // one burst per INTERVAL_SIZE packets, should make this a multiple of BURST_SIZE
     double intervalTime;
     int instantBurst;
-    int burstFactor;
+    double burstFactor;
     double minSpeed;
     double maxSpeed;
     double startSpeed;
@@ -14,7 +14,7 @@ public class Parameters {
     double alpha;
     double threshold;
 
-    public Parameters(int burstSize, int intervalSize, double intervalTime, int instantBurst, int burstFactor, double minSpeed, double maxSpeed, double startSpeed, int gracePeriod, int predMode, double alpha, double threshold) {
+    public Parameters(int burstSize, int intervalSize, double intervalTime, int instantBurst, double burstFactor, double minSpeed, double maxSpeed, double startSpeed, int gracePeriod, int predMode, double alpha, double threshold) {
         this.burstSize = burstSize;
         this.intervalSize = intervalSize;
         this.intervalTime = intervalTime;
@@ -45,7 +45,7 @@ public class Parameters {
         return instantBurst;
     }
 
-    public int getBurstFactor() {
+    public double getBurstFactor() {
         return burstFactor;
     }
 

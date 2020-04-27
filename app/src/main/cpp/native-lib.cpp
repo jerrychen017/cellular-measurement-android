@@ -31,7 +31,7 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
     jmethodID getIntervalSize = env->GetMethodID(paramsClass, "getIntervalSize", "()I");
     jmethodID getIntervalTime = env->GetMethodID(paramsClass, "getIntervalTime", "()D");
     jmethodID getInstantBurst = env->GetMethodID(paramsClass, "getInstantBurst", "()I");
-    jmethodID getBurstFactor = env->GetMethodID(paramsClass, "getBurstFactor", "()I");
+    jmethodID getBurstFactor = env->GetMethodID(paramsClass, "getBurstFactor", "()D");
     jmethodID getMinSpeed = env->GetMethodID(paramsClass, "getMinSpeed", "()D");
     jmethodID getMaxSpeed = env->GetMethodID(paramsClass, "getMaxSpeed", "()D");
     jmethodID getStartSpeed = env->GetMethodID(paramsClass, "getStartSpeed", "()D");
@@ -44,7 +44,7 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
     params.interval_size = env->CallIntMethod(paramsObj, getIntervalSize);
     params.interval_time = env->CallDoubleMethod(paramsObj, getIntervalTime);
     params.instant_burst = env->CallIntMethod(paramsObj, getInstantBurst);
-    params.burst_factor = env->CallIntMethod(paramsObj, getBurstFactor);
+    params.burst_factor = env->CallDoubleMethod(paramsObj, getBurstFactor);
     params.min_speed = env->CallDoubleMethod(paramsObj, getMinSpeed);
     params.max_speed = env->CallDoubleMethod(paramsObj, getMaxSpeed);
     params.start_speed = env->CallDoubleMethod(paramsObj, getStartSpeed);

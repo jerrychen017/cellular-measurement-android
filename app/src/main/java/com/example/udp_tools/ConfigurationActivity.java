@@ -75,6 +75,18 @@ public class ConfigurationActivity extends AppCompatActivity {
         String instantBurst = prefs.getString("instantBurst", instantBurstStr.getText().toString());
         instantBurstStr.setText("" + instantBurst);
 
+        EditText thresholdStr = (EditText) findViewById(R.id.threshold);
+        String threshold = prefs.getString("threshold", thresholdStr.getText().toString());
+        thresholdStr.setText("" + threshold);
+
+        EditText alphaStr = (EditText) findViewById(R.id.alpha);
+        String alpha = prefs.getString("alpha", alphaStr.getText().toString());
+        alphaStr.setText("" + alpha);
+
+        EditText predModeStr = (EditText) findViewById(R.id.pred_mode);
+        String predMode = prefs.getString("predMode", predModeStr.getText().toString());
+        predModeStr.setText("" + predMode);
+
         Button saveButton = findViewById(R.id.config_save_button);
 
         // go to InteractiveActivity when interactive button is clicked
@@ -82,44 +94,69 @@ public class ConfigurationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                editor.remove("ip");
                 EditText ipStr = (EditText) findViewById(R.id.ip_address);
                 editor.putString("ip", ipStr.getText().toString());
 
+                editor.remove("uploadPort");
                 EditText uploadPortStr = (EditText) findViewById(R.id.upload_port);
                 editor.putString("uploadPort", uploadPortStr.getText().toString());
 
+                editor.remove("downloadPort");
                 EditText downloadPortStr = (EditText) findViewById(R.id.download_port);
                 editor.putString("downloadPort", downloadPortStr.getText().toString());
 
+                editor.remove("interactivePort");
                 EditText interactivePortStr = (EditText) findViewById(R.id.interactive_port);
                 editor.putString("interactivePort", interactivePortStr.getText().toString());
 
+                editor.remove("burstSize");
                 EditText burstSizeStr = (EditText) findViewById(R.id.burst_size);
                 editor.putString("burstSize", burstSizeStr.getText().toString());
 
+                editor.remove("burstFactor");
                 EditText burstFactorStr = (EditText) findViewById(R.id.burst_factor);
                 editor.putString("burstFactor", burstFactorStr.getText().toString());
 
+                editor.remove("intervalSize");
                 EditText intervalSizeStr = (EditText) findViewById(R.id.interval_size);
                 editor.putString("intervalSize",intervalSizeStr.getText().toString());
 
+                editor.remove("intervalTime");
                 EditText intervalTimeStr = (EditText) findViewById(R.id.interval_time);
                 editor.putString("intervalTime", intervalTimeStr.getText().toString());
 
+                editor.remove("minSpeed");
                 EditText minSpeedStr = (EditText) findViewById(R.id.min_speed);
                 editor.putString("minSpeed", minSpeedStr.getText().toString());
 
+                editor.remove("maxSpeed");
                 EditText maxSpeedStr = (EditText) findViewById(R.id.max_speed);
                 editor.putString("maxSpeed", maxSpeedStr.getText().toString());
 
+                editor.remove("startSpeed");
                 EditText startSpeedStr = (EditText) findViewById(R.id.start_speed);
                 editor.putString("startSpeed", startSpeedStr.getText().toString());
 
+                editor.remove("gracePeriod");
                 EditText gracePeriodStr = (EditText) findViewById(R.id.grace_period);
                 editor.putString("gracePeriod", gracePeriodStr.getText().toString());
 
+                editor.remove("instantBurst");
                 EditText instantBurstStr = (EditText) findViewById(R.id.instant_burst);
                 editor.putString("instantBurst", instantBurstStr.getText().toString());
+
+                editor.remove("threshold");
+                EditText thresholdStr = (EditText) findViewById(R.id.threshold);
+                editor.putString("threshold", thresholdStr.getText().toString());
+
+                editor.remove("alpha");
+                EditText alphaStr = (EditText) findViewById(R.id.alpha);
+                editor.putString("alpha", alphaStr.getText().toString());
+
+                editor.remove("predMode");
+                EditText predModeStr = (EditText) findViewById(R.id.pred_mode);
+                editor.putString("predMode", predModeStr.getText().toString());
 
                 editor.commit();
 

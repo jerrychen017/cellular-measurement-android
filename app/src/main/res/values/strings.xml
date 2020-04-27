@@ -53,4 +53,9 @@
     <string name="download_port">Download Port</string>
     <string name="interval_time">Interval Time</string>
     <string name="_500">500</string>
+    <string name="upload_port">Upload Port</string>
+    <string name="threshold">Threshold</string>
+    <string name="_0_95">0.95</string>
+    <string name="alpha">Alpha</string>
+    <string name="prediction_mode">Prediction Mode</string>
 </resources>

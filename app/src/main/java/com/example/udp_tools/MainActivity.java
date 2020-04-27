@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         int instantBurst = Integer.parseInt(instantBurstStr);
 
         String burstFactorStr = prefs.getString("burstFactor", ((EditText) vi.findViewById(R.id.burst_factor)).getText().toString());
-        int burstFactor = Integer.parseInt(burstFactorStr);
+        double burstFactor = Double.parseDouble(burstFactorStr);
 
         String minSpeedStr = prefs.getString("minSpeed", ((EditText) vi.findViewById(R.id.min_speed)).getText().toString());
         double minSpeed = Double.parseDouble(minSpeedStr);
@@ -144,7 +144,20 @@ public class MainActivity extends AppCompatActivity {
         String gracePeriodStr = prefs.getString("gracePeriod", ((EditText) vi.findViewById(R.id.grace_period)).getText().toString());
         int gracePeriod = Integer.parseInt(gracePeriodStr);
 
-        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod, 1, 0.1, 0.95 );
+        String thresholdStr = prefs.getString("threshold", ((EditText) vi.findViewById(R.id.threshold)).getText().toString());
+        double threshold = Double.parseDouble(thresholdStr);
+
+        String alphaStr = prefs.getString("alpha", ((EditText) vi.findViewById(R.id.alpha)).getText().toString());
+        double alpha = Double.parseDouble(alphaStr);
+
+        String predModeStr = prefs.getString("predMode", ((EditText) vi.findViewById(R.id.pred_mode)).getText().toString());
+        int predMode = Integer.parseInt(predModeStr);
+
+        System.out.println("threshold is " + threshold);
+        System.out.println("alpha is " + alpha);
+        System.out.println("predMode is " + predMode);
+
+        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod, predMode, alpha, threshold);
 
 
         // go to ConfigurationActivity when config button is clicked
