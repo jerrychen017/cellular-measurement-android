@@ -18,22 +18,22 @@ void android_receive_bandwidth(const char * address, struct parameters params) {
 
 void start_client(const char *address, struct parameters params)
 {
-     printf("burst size is %d\n", params.burst_size);
-     printf("interval_size is %d\n", params.interval_size);
-     printf("interval_time is %f\n", params.interval_time);
-     printf("instant_burst is %d\n", params.instant_burst);
-     printf("burst_factor is %d\n", params.burst_factor);
-     printf("min_speed is %f\n", params.min_speed);
-     printf("max_speed is %f\n", params.max_speed);
-     printf("start_speed is %f\n", params.start_speed);
-     printf("grace_period is %d\n", params.grace_period);
-     printf("threshold is %f\n", params.threshold);
-     printf("alpha is %f\n", params.alpha);
-     printf("pred_mode is %d\n", params.pred_mode);
-     printf("size of params is %d\n", sizeof(params));
-     printf("size of int is %d\n", sizeof(int));
-     printf("size of double is %d\n", sizeof(double));
-     printf("size of bool is %d\n", sizeof(bool));
+//     printf("burst size is %d\n", params.burst_size);
+//     printf("interval_size is %d\n", params.interval_size);
+//     printf("interval_time is %f\n", params.interval_time);
+//     printf("instant_burst is %d\n", params.instant_burst);
+//     printf("burst_factor is %d\n", params.burst_factor);
+//     printf("min_speed is %f\n", params.min_speed);
+//     printf("max_speed is %f\n", params.max_speed);
+//     printf("start_speed is %f\n", params.start_speed);
+//     printf("grace_period is %d\n", params.grace_period);
+//     printf("threshold is %f\n", params.threshold);
+//     printf("alpha is %f\n", params.alpha);
+//     printf("pred_mode is %d\n", params.pred_mode);
+//     printf("size of params is %d\n", sizeof(params));
+//     printf("size of int is %d\n", sizeof(int));
+//     printf("size of double is %d\n", sizeof(double));
+//     printf("size of bool is %d\n", sizeof(bool));
 
 
     int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
