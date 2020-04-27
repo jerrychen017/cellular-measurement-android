@@ -93,25 +93,6 @@ public class MainActivity extends AppCompatActivity {
         output = findViewById(R.id.output);
         output.setMovementMethod(new ScrollingMovementMethod());
 
-        // Setup graph
-        graph = findViewById(R.id.graph);
-        uploadData = new LineGraphSeries<>(new DataPoint[]{});
-        downloadData = new LineGraphSeries<>(new DataPoint[]{});
-        graph.addSeries(uploadData);
-        graph.addSeries(downloadData);
-        downloadData.setColor(Color.BLUE);
-        uploadData.setColor(Color.RED);
-        graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(10);
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setScrollable(true);
-        graph.getViewport().setMaxY(15);
-        graph.getViewport().setYAxisBoundsManual(true);
-
-        // Append to graph on message
-        uploadHandler = new GraphHandler(uploadData, graph, "feedbackUpload");
-        downloadHandler = new GraphHandler(downloadData, graph, "feedbackDownload");
-
         // initialize parameters
         SharedPreferences prefs = getSharedPreferences("cellular-measurement", MODE_PRIVATE);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -153,11 +134,26 @@ public class MainActivity extends AppCompatActivity {
         String predModeStr = prefs.getString("predMode", ((EditText) vi.findViewById(R.id.pred_mode)).getText().toString());
         int predMode = Integer.parseInt(predModeStr);
 
-        System.out.println("threshold is " + threshold);
-        System.out.println("alpha is " + alpha);
-        System.out.println("predMode is " + predMode);
-
         params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod, predMode, alpha, threshold);
+
+        // Setup graph
+        graph = findViewById(R.id.graph);
+        uploadData = new LineGraphSeries<>(new DataPoint[]{});
+        downloadData = new LineGraphSeries<>(new DataPoint[]{});
+        graph.addSeries(uploadData);
+        graph.addSeries(downloadData);
+        downloadData.setColor(Color.BLUE);
+        uploadData.setColor(Color.RED);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(10);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setScrollable(true);
+        graph.getViewport().setMaxY(maxSpeed);
+        graph.getViewport().setYAxisBoundsManual(true);
+
+        // Append to graph on message
+        uploadHandler = new GraphHandler(uploadData, graph, "feedbackUpload");
+        downloadHandler = new GraphHandler(downloadData, graph, "feedbackDownload");
 
 
         // go to ConfigurationActivity when config button is clicked

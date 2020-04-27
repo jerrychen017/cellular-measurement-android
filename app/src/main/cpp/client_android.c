@@ -66,15 +66,24 @@ void start_client(const char *address, struct parameters params)
 
     int buf_len = serializeStruct(&start_pkt, buf);
 
-    sendto_dbg(client_send_sk, buf, buf_len, 0,
-               (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
-    sendto_dbg(client_recv_sk, buf, buf_len, 0,
-               (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
     for (;;)
     {
         read_mask = mask;
         timeout.tv_sec = 1;
         timeout.tv_usec = 0;
+
+        // re-send NETWORK_START packets when timeout
+        if (!got_send_ack) {
+            sendto_dbg(client_send_sk, buf, buf_len, 0,
+                       (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
+        }
+
+        if (!got_recv_ack) {
+            sendto_dbg(client_recv_sk, buf, buf_len, 0,
+                       (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
+        }
+
+        printf("re-sending NETWORK_START\n");
 
         num = select(FD_SETSIZE, &read_mask, NULL, NULL, &timeout);
 
@@ -138,18 +147,7 @@ void start_client(const char *address, struct parameters params)
             printf(".");
             fflush(0);
 
-            // re-send NETWORK_START packets when timeout
-            if (!got_send_ack) {
-                sendto_dbg(client_send_sk, buf, buf_len, 0,
-                           (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
-            }
 
-            if (!got_recv_ack) {
-                sendto_dbg(client_recv_sk, buf, buf_len, 0,
-                           (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
-            }
-
-            printf("re-sending NETWORK_START\n");
 
             if (num < 0) {
                 perror("num is negative\n");
