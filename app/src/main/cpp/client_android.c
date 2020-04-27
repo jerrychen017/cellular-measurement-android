@@ -64,12 +64,12 @@ void start_client(const char *address, struct parameters params)
     start_pkt.type = NETWORK_START;
     start_pkt.params = params;
 
-    serializeStruct(&start_pkt, &buf);
-    sendto_dbg(client_send_sk, &buf, sizeof(buf), 0,
-               (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
-    sendto_dbg(client_recv_sk, &buf, sizeof(buf), 0,
-               (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
+    int buf_len = serializeStruct(&start_pkt, buf);
 
+    sendto_dbg(client_send_sk, buf, buf_len, 0,
+               (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
+    sendto_dbg(client_recv_sk, buf, buf_len, 0,
+               (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
     for (;;)
     {
         read_mask = mask;
@@ -140,12 +140,12 @@ void start_client(const char *address, struct parameters params)
 
             // re-send NETWORK_START packets when timeout
             if (!got_send_ack) {
-                sendto_dbg(client_send_sk, &buf, sizeof(buf), 0,
+                sendto_dbg(client_send_sk, buf, buf_len, 0,
                            (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
             }
 
             if (!got_recv_ack) {
-                sendto_dbg(client_recv_sk, &buf, sizeof(buf), 0,
+                sendto_dbg(client_recv_sk, buf, buf_len, 0,
                            (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
             }
 
