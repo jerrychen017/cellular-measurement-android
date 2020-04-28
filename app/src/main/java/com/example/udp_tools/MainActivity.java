@@ -188,7 +188,14 @@ public class MainActivity extends AppCompatActivity {
                         View vi = inflater.inflate(R.layout.activity_configuration, null);
                         EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                         String ipStr = ipAddress.getText().toString();
-                        startClientAndroidFromJNI(ipStr, params);
+                        int status = startClientAndroidFromJNI(ipStr, params);
+                        if (status == 1) {
+                            output.append("Bandwidth Measurement: bind error");
+                            return;
+                        } else if (status == 2) {
+                            output.append("Bandwidth Measurement: server is busy");
+                            return;
+                        }
 
                         new Thread(new Runnable() {
                             @Override
@@ -329,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
 
     public native void startDataGeneratorFromJNI();
 
-    public native void startClientAndroidFromJNI(String ip, Parameters params);
+    public native int startClientAndroidFromJNI(String ip, Parameters params);
 
     public native void receiveBandwidthFromJNI(String ip, int predMode, Parameters params);
 

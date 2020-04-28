@@ -60,7 +60,7 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
 /**
  * start android client and complete handshake/ack process
  */
-extern "C" JNIEXPORT void JNICALL
+extern "C" JNIEXPORT jint JNICALL
 Java_com_example_udp_1tools_MainActivity_startClientAndroidFromJNI(
         JNIEnv *env,
         jobject activity,
@@ -72,7 +72,8 @@ Java_com_example_udp_1tools_MainActivity_startClientAndroidFromJNI(
 
     struct parameters params = get_parameters(env, paramsObj);
 
-    start_client(address_c.c_str(), params);
+    int status = start_client(address_c.c_str(), params);
+    return status;
 }
 
 extern "C" JNIEXPORT void JNICALL

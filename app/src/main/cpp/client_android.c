@@ -16,7 +16,7 @@ void android_receive_bandwidth(const char * address, struct parameters params) {
     receive_bandwidth(client_recv_sk, client_recv_addr, params);
 }
 
-void start_client(const char *address, struct parameters params)
+int start_client(const char *address, struct parameters params)
 {
 //     printf("burst size is %d\n", params.burst_size);
 //     printf("interval_size is %d\n", params.interval_size);
@@ -96,7 +96,7 @@ void start_client(const char *address, struct parameters params)
                 if (len < 0)
                 {
                     perror("socket error");
-                    exit(1);
+                    return 1;
                 }
 
                 if (data_pkt.hdr.type == NETWORK_START_ACK)
@@ -112,7 +112,7 @@ void start_client(const char *address, struct parameters params)
                     printf("server is busy\n");
                     close(client_send_sk);
                     close(client_recv_sk);
-                    return;
+                    return 2;
                 }
             }
             if (FD_ISSET(client_recv_sk, &read_mask))
@@ -138,7 +138,7 @@ void start_client(const char *address, struct parameters params)
                     printf("server is busy\n");
                     close(client_recv_sk);
                     close(client_send_sk);
-                    return;
+                    return 2;
                 }
             }
         }
@@ -146,8 +146,6 @@ void start_client(const char *address, struct parameters params)
         {
             printf(".");
             fflush(0);
-
-
 
             if (num < 0) {
                 perror("num is negative\n");
@@ -157,7 +155,7 @@ void start_client(const char *address, struct parameters params)
 
         if (got_recv_ack && got_send_ack)
         {
-            return;
+            return 0;
         }
     }
 }
