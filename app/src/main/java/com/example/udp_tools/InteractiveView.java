@@ -77,7 +77,7 @@ public class InteractiveView extends View {
                     int received_id = pkt.id;
                     if (received_id == myID) {
                         if (last_received_sequence_num > received_seq_num) { // received packet was delayed
-                            Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
+//                            Log.d("interactive", "Interactive packet dropped with sequence number " + received_seq_num);
                         } else {
                             users[myID].setX(pkt.x);
                             users[myID].setY(pkt.y);
@@ -85,7 +85,7 @@ public class InteractiveView extends View {
                             num_dropped_packet += (received_seq_num - last_received_sequence_num - 1);
                             last_received_sequence_num = received_seq_num;
                             latency = pkt.latency;
-                            Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
+//                            Log.d("interactive", "Interactive packet received with coord x: " + pkt.x + " y: " + pkt.y + " sequence_num: " + received_seq_num);
                         }
                         MainActivity.updateStat(counter, num_dropped_packet, latency);
                     } else { // other user
@@ -144,7 +144,7 @@ public class InteractiveView extends View {
 
                     int ret = sendInteractivePacket(last_sent_sequence_num, event.getX()/getWidth(), event.getY()/getHeight());
                     if (ret > 0) { // error occurred
-                        Log.d("interactive", "Error occurred when sending interactive packets");
+//                        Log.d("interactive", "Error occurred when sending interactive packets");
                     }
                 }
                 break;
