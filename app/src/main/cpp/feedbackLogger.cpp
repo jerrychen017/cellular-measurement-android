@@ -36,3 +36,7 @@ void sendFeedbackDownload(double d)
     jmethodID methodId = downEnv->GetMethodID(cls, "sendFeedbackDownload", "(D)V");
     downEnv->CallVoidMethod(downActivity, methodId, d);
 }
+
+void sendFeedbackLatency(double d)
+{
+}

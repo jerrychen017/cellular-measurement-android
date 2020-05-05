@@ -13,7 +13,7 @@ void android_start_controller(const char * address, struct parameters params) {
 void android_receive_bandwidth(const char * address, struct parameters params) {
     int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
     struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
-    receive_bandwidth(client_recv_sk, client_recv_addr, params);
+    receive_bandwidth(client_recv_sk, client_recv_addr, params, true);
 }
 
 int start_client(const char *address, struct parameters params)
