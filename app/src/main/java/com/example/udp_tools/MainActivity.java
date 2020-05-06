@@ -110,9 +110,6 @@ public class MainActivity extends AppCompatActivity {
         String instantBurstStr = prefs.getString("instantBurst", ((EditText) vi.findViewById(R.id.instant_burst)).getText().toString());
         int instantBurst = Integer.parseInt(instantBurstStr);
 
-        String burstFactorStr = prefs.getString("burstFactor", ((EditText) vi.findViewById(R.id.burst_factor)).getText().toString());
-        double burstFactor = Double.parseDouble(burstFactorStr);
-
         String minSpeedStr = prefs.getString("minSpeed", ((EditText) vi.findViewById(R.id.min_speed)).getText().toString());
         double minSpeed = Double.parseDouble(minSpeedStr);
 
@@ -134,7 +131,10 @@ public class MainActivity extends AppCompatActivity {
         String predModeStr = prefs.getString("predMode", ((EditText) vi.findViewById(R.id.pred_mode)).getText().toString());
         int predMode = Integer.parseInt(predModeStr);
 
-        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, burstFactor, minSpeed, maxSpeed, startSpeed, gracePeriod, predMode, alpha, threshold);
+        String useTCPStr = prefs.getString("useTCP", ((EditText) vi.findViewById(R.id.use_tcp)).getText().toString());
+        final int useTCP = Integer.parseInt(useTCPStr);
+
+        params = new Parameters(burstSize, intervalSize, intervalTime, instantBurst, minSpeed, maxSpeed, startSpeed, gracePeriod, predMode, useTCP ,alpha, threshold);
 
         // Setup graph
         graph = findViewById(R.id.graph);
@@ -148,8 +148,11 @@ public class MainActivity extends AppCompatActivity {
         graph.getViewport().setMaxX(10);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setScrollable(true);
-        graph.getViewport().setMaxY(maxSpeed);
-        graph.getViewport().setYAxisBoundsManual(true);
+        if (useTCP == 0) {
+            graph.getViewport().setMaxY(maxSpeed);
+            graph.getViewport().setYAxisBoundsManual(true);
+        }
+
 
         // Append to graph on message
         uploadHandler = new GraphHandler(uploadData, graph, "feedbackUpload");
@@ -169,9 +172,12 @@ public class MainActivity extends AppCompatActivity {
         bandwidthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopDataGeneratorThreadFromJNI();
-                stopControllerThreadFromJNI();
-                stopReceivingThreadFromJNI();
+                if (useTCP == 0) {
+                    stopDataGeneratorThreadFromJNI();
+                    stopControllerThreadFromJNI();
+                    stopReceivingThreadFromJNI();
+                }
+
                 // start sending
                 System.out.println("bandwidth is started!");
                 startTime = Calendar.getInstance().getTime();
@@ -197,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
+
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -204,9 +211,10 @@ public class MainActivity extends AppCompatActivity {
                                 View vi = inflater.inflate(R.layout.activity_configuration, null);
                                 EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
                                 String ipStr = ipAddress.getText().toString();
-                                receiveBandwidthFromJNI(ipStr, 1, params);
+                                receiveBandwidthFromJNI(ipStr, params);
                             }
                         }).start();
+
 
                         new Thread(new Runnable() {
                             @Override
@@ -219,15 +227,16 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).start();
 
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                startDataGeneratorFromJNI();
-                            }
-                        }).start();
+                        if (useTCP == 0) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startDataGeneratorFromJNI();
+                                }
+                            }).start();
+                        }
                     }
                 }).start();
-
             }
         });
 
@@ -236,9 +245,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // stop bandwidth thread
-                stopDataGeneratorThreadFromJNI();
-                stopControllerThreadFromJNI();
-                stopReceivingThreadFromJNI();
+                if (useTCP == 0) {
+                    stopDataGeneratorThreadFromJNI();
+                    stopControllerThreadFromJNI();
+                    stopReceivingThreadFromJNI();
+                } else{
+                    stopTCPSendThreadFromJNI();
+                    stopTCPRecvThreadFromJNI();
+                }
                 output.append("bandwidth measurement stopped\n");
             }
         });
@@ -330,6 +344,10 @@ public class MainActivity extends AppCompatActivity {
 
     public native void stopControllerThreadFromJNI();
 
+    public native void stopTCPSendThreadFromJNI();
+
+    public native void stopTCPRecvThreadFromJNI();
+
     public native void stopReceivingThreadFromJNI();
 
     public native void startControllerFromJNI(String ip, Parameters params);
@@ -338,6 +356,6 @@ public class MainActivity extends AppCompatActivity {
 
     public native int startClientAndroidFromJNI(String ip, Parameters params);
 
-    public native void receiveBandwidthFromJNI(String ip, int predMode, Parameters params);
+    public native void receiveBandwidthFromJNI(String ip, Parameters params);
 
 }

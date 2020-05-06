@@ -1,19 +1,31 @@
 #include "client_android.h"
 #include "./cellular-measurement/bidirectional/receive_bandwidth.h"
+#include "./cellular-measurement/bidirectional/send_bandwidth.h"
 #include "./cellular-measurement/bidirectional/controller.h"
 #include "./cellular-measurement/bidirectional/net_utils.h"
 
 
 void android_start_controller(const char * address, struct parameters params) {
-    int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
-    struct sockaddr_in client_send_addr = addrbyname(address, CLIENT_SEND_PORT);
-    start_controller(true, client_send_addr, client_send_sk, params);
+    if (params.use_tcp) {
+        int client_send_sk  = setup_tcp_socket_send(address, CLIENT_SEND_PORT);
+        client_send_bandwidth_tcp(client_send_sk);
+    } else {
+        int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
+        struct sockaddr_in client_send_addr = addrbyname(address, CLIENT_SEND_PORT);
+        start_controller(true, client_send_addr, client_send_sk, params);
+    }
 }
 
 void android_receive_bandwidth(const char * address, struct parameters params) {
-    int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
-    struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
-    receive_bandwidth(client_recv_sk, client_recv_addr, params, true);
+    if (params.use_tcp) {
+        int client_recv_sk  = setup_tcp_socket_send(address, CLIENT_RECEIVE_PORT);
+        client_receive_bandwidth_tcp(client_recv_sk);
+    } else {
+        int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
+        struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
+
+        receive_bandwidth(client_recv_sk, client_recv_addr, params, true);
+    }
 }
 
 int start_client(const char *address, struct parameters params)
@@ -34,7 +46,6 @@ int start_client(const char *address, struct parameters params)
 //     printf("size of int is %d\n", sizeof(int));
 //     printf("size of double is %d\n", sizeof(double));
 //     printf("size of bool is %d\n", sizeof(bool));
-
 
     int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
     int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);

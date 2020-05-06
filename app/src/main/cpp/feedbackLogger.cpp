@@ -9,7 +9,7 @@ static jobject downActivity;
 
 void setupFeedbackUpload(JNIEnv *env, jobject activity)
 {
-    printf("setupfeedback called\n");
+    printf("setupFeedbackUpload called\n");
 
     upEnv = env;
     upActivity = activity;
@@ -17,7 +17,7 @@ void setupFeedbackUpload(JNIEnv *env, jobject activity)
 
 void setupFeedbackDownload(JNIEnv *env, jobject activity)
 {
-    printf("setupfeedback called\n");
+    printf("setupFeedbackDownload called\n");
 
     downEnv = env;
     downActivity = activity;

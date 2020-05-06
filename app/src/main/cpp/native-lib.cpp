@@ -10,6 +10,7 @@ extern "C" {
 #include "cellular-measurement/bidirectional/data_generator.h"
 #include "cellular-measurement/bidirectional/controller.h"
 #include "cellular-measurement/bidirectional/receive_bandwidth.h"
+#include "cellular-measurement/bidirectional/send_bandwidth.h"
 #include "cellular-measurement/bidirectional/net_utils.h"
 #include "cellular-measurement/interactive_client/interactive_client.h"
 #include "cellular-measurement/interactive_client/interactive_net_include.h"
@@ -31,12 +32,12 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
     jmethodID getIntervalSize = env->GetMethodID(paramsClass, "getIntervalSize", "()I");
     jmethodID getIntervalTime = env->GetMethodID(paramsClass, "getIntervalTime", "()D");
     jmethodID getInstantBurst = env->GetMethodID(paramsClass, "getInstantBurst", "()I");
-    jmethodID getBurstFactor = env->GetMethodID(paramsClass, "getBurstFactor", "()D");
     jmethodID getMinSpeed = env->GetMethodID(paramsClass, "getMinSpeed", "()D");
     jmethodID getMaxSpeed = env->GetMethodID(paramsClass, "getMaxSpeed", "()D");
     jmethodID getStartSpeed = env->GetMethodID(paramsClass, "getStartSpeed", "()D");
     jmethodID getGracePeriod = env->GetMethodID(paramsClass, "getGracePeriod", "()I");
     jmethodID getPredMode = env->GetMethodID(paramsClass, "getPredMode", "()I");
+    jmethodID getUseTCP = env->GetMethodID(paramsClass, "getUseTCP", "()I");
     jmethodID getAlpha = env->GetMethodID(paramsClass, "getAlpha", "()D");
     jmethodID getThreshold = env->GetMethodID(paramsClass, "getThreshold", "()D");
 
@@ -44,12 +45,12 @@ struct parameters get_parameters(JNIEnv *env, jobject paramsObj) {
     params.interval_size = env->CallIntMethod(paramsObj, getIntervalSize);
     params.interval_time = env->CallDoubleMethod(paramsObj, getIntervalTime);
     params.instant_burst = env->CallIntMethod(paramsObj, getInstantBurst);
-    params.burst_factor = env->CallDoubleMethod(paramsObj, getBurstFactor);
     params.min_speed = env->CallDoubleMethod(paramsObj, getMinSpeed);
     params.max_speed = env->CallDoubleMethod(paramsObj, getMaxSpeed);
     params.start_speed = env->CallDoubleMethod(paramsObj, getStartSpeed);
     params.grace_period = env->CallIntMethod(paramsObj, getGracePeriod);
     params.pred_mode = env->CallIntMethod(paramsObj, getPredMode);
+    params.use_tcp = env->CallIntMethod(paramsObj, getUseTCP);
     params.alpha = env->CallDoubleMethod(paramsObj, getAlpha);
     params.threshold = env->CallDoubleMethod(paramsObj, getThreshold);
 
@@ -109,7 +110,6 @@ Java_com_example_udp_1tools_MainActivity_receiveBandwidthFromJNI(
         JNIEnv *env,
         jobject activity,
         jstring ip,
-        jint pred_mode,
         jobject paramsObj) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
@@ -131,6 +131,20 @@ Java_com_example_udp_1tools_MainActivity_stopControllerThreadFromJNI(
         JNIEnv *env,
         jobject activity /* this */) {
     stop_controller_thread();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopTCPSendThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_tcp_send_thread();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_udp_1tools_MainActivity_stopTCPRecvThreadFromJNI(
+        JNIEnv *env,
+        jobject activity /* this */) {
+    stop_tcp_recv_thread();
 }
 
 extern "C" JNIEXPORT void JNICALL
