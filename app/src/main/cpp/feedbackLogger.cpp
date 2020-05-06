@@ -40,3 +40,7 @@ void sendFeedbackDownload(double d)
 void sendFeedbackLatency(double d)
 {
 }
+
+void clear_file_pointers() {
+
+}
