@@ -1,41 +1,44 @@
 #include "client_android.h"
 #include "./cellular-measurement/bidirectional/receive_bandwidth.h"
+#include "./cellular-measurement/bidirectional/send_bandwidth.h"
 #include "./cellular-measurement/bidirectional/controller.h"
 #include "./cellular-measurement/bidirectional/net_utils.h"
 
-
+/**
+ * Starts controller on the Android side
+ */
 void android_start_controller(const char * address, struct parameters params) {
-    int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
-    struct sockaddr_in client_send_addr = addrbyname(address, CLIENT_SEND_PORT);
-    start_controller(true, client_send_addr, client_send_sk, params);
+    if (params.use_tcp) {
+        int client_send_sk  = setup_tcp_socket_send(address, CLIENT_SEND_PORT);
+        client_send_bandwidth_tcp(client_send_sk);
+    } else {
+        int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
+        struct sockaddr_in client_send_addr = addrbyname(address, CLIENT_SEND_PORT);
+        start_controller(true, client_send_addr, client_send_sk, params);
+    }
 }
 
+/**
+ * Receives bandwidth measurement on the Android side
+ */
 void android_receive_bandwidth(const char * address, struct parameters params) {
-    int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
-    struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
-    receive_bandwidth(client_recv_sk, client_recv_addr, params, true);
+    if (params.use_tcp) {
+        int client_recv_sk  = setup_tcp_socket_send(address, CLIENT_RECEIVE_PORT);
+        client_receive_bandwidth_tcp(client_recv_sk);
+    } else {
+        int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
+        struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
+
+        receive_bandwidth(client_recv_sk, client_recv_addr, params, true);
+    }
 }
 
+/**
+ * Sends START packet to the server with all parameters and wait for ACKs.
+ * Once connected with the server, return 0.
+ */
 int start_client(const char *address, struct parameters params)
 {
-//     printf("burst size is %d\n", params.burst_size);
-//     printf("interval_size is %d\n", params.interval_size);
-//     printf("interval_time is %f\n", params.interval_time);
-//     printf("instant_burst is %d\n", params.instant_burst);
-//     printf("burst_factor is %d\n", params.burst_factor);
-//     printf("min_speed is %f\n", params.min_speed);
-//     printf("max_speed is %f\n", params.max_speed);
-//     printf("start_speed is %f\n", params.start_speed);
-//     printf("grace_period is %d\n", params.grace_period);
-//     printf("threshold is %f\n", params.threshold);
-//     printf("alpha is %f\n", params.alpha);
-//     printf("pred_mode is %d\n", params.pred_mode);
-//     printf("size of params is %d\n", sizeof(params));
-//     printf("size of int is %d\n", sizeof(int));
-//     printf("size of double is %d\n", sizeof(double));
-//     printf("size of bool is %d\n", sizeof(bool));
-
-
     int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
     int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
 
@@ -74,12 +77,12 @@ int start_client(const char *address, struct parameters params)
 
         // re-send NETWORK_START packets when timeout
         if (!got_send_ack) {
-            sendto_dbg(client_send_sk, buf, buf_len, 0,
+            sendto(client_send_sk, buf, buf_len, 0,
                        (struct sockaddr *)&client_send_addr, sizeof(client_send_addr));
         }
 
         if (!got_recv_ack) {
-            sendto_dbg(client_recv_sk, buf, buf_len, 0,
+            sendto(client_recv_sk, buf, buf_len, 0,
                        (struct sockaddr *)&client_recv_addr, sizeof(client_recv_addr));
         }
 

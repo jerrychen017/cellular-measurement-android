@@ -43,7 +43,6 @@
     <string name="stop">Stop</string>
     <string name="num_dropped">Num Dropped</string>
     <string name="bandwidth_port">Bandwidth Port</string>
-    <string name="_4578">4578</string>
     <string name="interactive_port">Interactive Port</string>
     <string name="_4577">4577</string>
     <string name="_0">0</string>
@@ -58,4 +57,8 @@
     <string name="_0_95">0.95</string>
     <string name="alpha">Alpha</string>
     <string name="prediction_mode">Prediction Mode</string>
+    <string name="_4576">4576</string>
+    <string name="_4578">4578</string>
+    <string name="use_tcp">Use TCP</string>
+    <string name="_20">20</string>
 </resources>

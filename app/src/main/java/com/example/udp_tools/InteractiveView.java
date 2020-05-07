@@ -74,6 +74,9 @@ public class InteractiveView extends View {
                     InteractivePacket pkt = receiveInteractivePacket();
                     System.out.println("received an interactive packet");
                     int received_seq_num = pkt.seq;
+                    if (received_seq_num < 0) {
+                        continue; // error packet
+                    }
                     int received_id = pkt.id;
                     if (received_id == myID) {
                         if (last_received_sequence_num > received_seq_num) { // received packet was delayed

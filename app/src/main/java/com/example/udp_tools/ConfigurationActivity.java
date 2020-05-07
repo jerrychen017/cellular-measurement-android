@@ -43,10 +43,6 @@ public class ConfigurationActivity extends AppCompatActivity {
         String burstSize = prefs.getString("burstSize", burstSizeStr.getText().toString());
         burstSizeStr.setText("" + burstSize);
 
-        EditText burstFactorStr = (EditText) findViewById(R.id.burst_factor);
-        String burstFactor = prefs.getString("burstFactor", burstFactorStr.getText().toString());
-        burstFactorStr.setText("" + burstFactor);
-
         EditText intervalSizeStr = (EditText) findViewById(R.id.interval_size);
         String intervalSize = prefs.getString("intervalSize", intervalSizeStr.getText().toString());
         intervalSizeStr.setText("" + intervalSize);
@@ -87,6 +83,10 @@ public class ConfigurationActivity extends AppCompatActivity {
         String predMode = prefs.getString("predMode", predModeStr.getText().toString());
         predModeStr.setText("" + predMode);
 
+        EditText useTCPStr = (EditText) findViewById(R.id.use_tcp);
+        String useTCP = prefs.getString("useTCP", useTCPStr.getText().toString());
+        useTCPStr.setText("" + useTCP);
+
         Button saveButton = findViewById(R.id.config_save_button);
 
         // go to InteractiveActivity when interactive button is clicked
@@ -113,10 +113,6 @@ public class ConfigurationActivity extends AppCompatActivity {
                 editor.remove("burstSize");
                 EditText burstSizeStr = (EditText) findViewById(R.id.burst_size);
                 editor.putString("burstSize", burstSizeStr.getText().toString());
-
-                editor.remove("burstFactor");
-                EditText burstFactorStr = (EditText) findViewById(R.id.burst_factor);
-                editor.putString("burstFactor", burstFactorStr.getText().toString());
 
                 editor.remove("intervalSize");
                 EditText intervalSizeStr = (EditText) findViewById(R.id.interval_size);
@@ -157,6 +153,10 @@ public class ConfigurationActivity extends AppCompatActivity {
                 editor.remove("predMode");
                 EditText predModeStr = (EditText) findViewById(R.id.pred_mode);
                 editor.putString("predMode", predModeStr.getText().toString());
+
+                editor.remove("useTCP");
+                EditText useTCPStr = (EditText) findViewById(R.id.use_tcp);
+                editor.putString("useTCP", useTCPStr.getText().toString());
 
                 editor.commit();
 
