@@ -1,13 +1,12 @@
-//
-// Created by Jerry Chen on 3/25/20.
-//
-
 #include "logger.h"
 
 static int pfd[2];
 static pthread_t thr;
 static const char *tag = "myapp";
 
+/**
+ * Starts logger to redirect stdout to Android debug log
+ */
 int start_logger(const char *app_name)
 {
 
@@ -30,6 +29,9 @@ int start_logger(const char *app_name)
     return 0;
 }
 
+/**
+ * redirect stdout to Android debug log
+ */
 static void *thread_func(void* ptr)
 {
     ssize_t rdsz;

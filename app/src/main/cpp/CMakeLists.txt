@@ -22,7 +22,6 @@ add_library( # Sets the name of the library.
         cellular-measurement/bidirectional/controller.c
         cellular-measurement/bidirectional/bandwidth_utils.c
         cellular-measurement/bidirectional/net_utils.c
-        cellular-measurement/bidirectional/sendto_dbg.c
         client_android.c
         cellular-measurement/bidirectional/send_bandwidth.c
         cellular-measurement/bidirectional/receive_bandwidth.c

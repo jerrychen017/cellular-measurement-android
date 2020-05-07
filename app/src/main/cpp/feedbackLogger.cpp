@@ -7,6 +7,9 @@ static jobject upActivity;
 static JNIEnv *downEnv;
 static jobject downActivity;
 
+/**
+ * Setup JNIEnv for sending upload rate to Android
+ */
 void setupFeedbackUpload(JNIEnv *env, jobject activity)
 {
     printf("setupFeedbackUpload called\n");
@@ -15,6 +18,9 @@ void setupFeedbackUpload(JNIEnv *env, jobject activity)
     upActivity = activity;
 }
 
+/**
+ * Setup JNIEnv for sending download rate to Android
+ */
 void setupFeedbackDownload(JNIEnv *env, jobject activity)
 {
     printf("setupFeedbackDownload called\n");
@@ -23,6 +29,9 @@ void setupFeedbackDownload(JNIEnv *env, jobject activity)
     downActivity = activity;
 }
 
+/**
+ * Send upload rate to the Android
+ */
 void sendFeedbackUpload(double d)
 {
     jclass cls = upEnv->GetObjectClass(upActivity);
@@ -30,6 +39,9 @@ void sendFeedbackUpload(double d)
     upEnv->CallVoidMethod(upActivity, methodId, d);
 }
 
+/**
+ * Send download rate to the Android
+ */
 void sendFeedbackDownload(double d)
 {
     jclass cls = downEnv->GetObjectClass(downActivity);
@@ -37,6 +49,9 @@ void sendFeedbackDownload(double d)
     downEnv->CallVoidMethod(downActivity, methodId, d);
 }
 
+/**
+ * Dummy definition
+ */
 void sendFeedbackLatency(double d)
 {
 }
