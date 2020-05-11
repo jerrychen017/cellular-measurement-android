@@ -36,40 +36,18 @@ e.g.
 ./interactive_server 10 
 ```
  3. Run the Android App  
- ![alt-text-1](./res/demo-main.png "Demo Main") ![alt-text-2](./res/demo-config.png "Demo Configuration")    
-
+ <img width="200" src="./res/demo-main.png"> <img width="200" src="./res/demo-config.png">
  * `Echo` button sends a UDP packet to the server and measures the RTT (round-trip-time) between client (your phone) and server.
- * `Bandwidth Measurement` button measures upload/download speed.
+ * `Bandwidth Measurement` button measures upload/download speed (app will start graphing).
  * `Stop` button stops the bandwidth measurement. 
-### Break down into end to end tests
+ * `Configuration` button brings you to the configuration page where you can modify parameters. 
 
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+* [Android Studio](https://developer.android.com/studio) - IDE for Android Development
+* [Grale](https://gradle.org/) - Dependency Management
+* [Android NDK](https://developer.android.com/ndk) - Android Native Development Kit
 
 ## Versioning
 
@@ -77,15 +55,10 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **[Jerry Chen](https://github.com/jerrychen017)**
+* **[Jason Zhang](https://github.com/jz1242)**
+* **[Daniel Qian](https://github.com/kuhfzgbt)**
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
