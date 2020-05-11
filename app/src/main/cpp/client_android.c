@@ -7,13 +7,13 @@
 /**
  * Starts controller on the Android side
  */
-void android_start_controller(const char * address, struct parameters params) {
+void android_start_controller(const char * address, struct parameters params, int port) {
     if (params.use_tcp) {
-        int client_send_sk  = setup_tcp_socket_send(address, CLIENT_SEND_PORT);
+        int client_send_sk  = setup_tcp_socket_send(address, port);
         client_send_bandwidth_tcp(client_send_sk);
     } else {
-        int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
-        struct sockaddr_in client_send_addr = addrbyname(address, CLIENT_SEND_PORT);
+        int client_send_sk = setup_bound_socket(port);
+        struct sockaddr_in client_send_addr = addrbyname(address, port);
         start_controller(true, client_send_addr, client_send_sk, params);
     }
 }
@@ -21,13 +21,13 @@ void android_start_controller(const char * address, struct parameters params) {
 /**
  * Receives bandwidth measurement on the Android side
  */
-void android_receive_bandwidth(const char * address, struct parameters params) {
+void android_receive_bandwidth(const char * address, struct parameters params, int port) {
     if (params.use_tcp) {
-        int client_recv_sk  = setup_tcp_socket_send(address, CLIENT_RECEIVE_PORT);
+        int client_recv_sk  = setup_tcp_socket_send(address, port);
         client_receive_bandwidth_tcp(client_recv_sk);
     } else {
-        int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
-        struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
+        int client_recv_sk = setup_bound_socket(port);
+        struct sockaddr_in client_recv_addr = addrbyname(address, port);
 
         receive_bandwidth(client_recv_sk, client_recv_addr, params, true);
     }
@@ -37,13 +37,13 @@ void android_receive_bandwidth(const char * address, struct parameters params) {
  * Sends START packet to the server with all parameters and wait for ACKs.
  * Once connected with the server, return 0.
  */
-int start_client(const char *address, struct parameters params)
+int start_client(const char *address, struct parameters params, int client_send_port, int client_recv_port)
 {
-    int client_send_sk = setup_bound_socket(CLIENT_SEND_PORT);
-    int client_recv_sk = setup_bound_socket(CLIENT_RECEIVE_PORT);
+    int client_send_sk = setup_bound_socket(client_send_port);
+    int client_recv_sk = setup_bound_socket(client_recv_port);
 
-    struct sockaddr_in client_send_addr = addrbyname(address, CLIENT_SEND_PORT);
-    struct sockaddr_in client_recv_addr = addrbyname(address, CLIENT_RECEIVE_PORT);
+    struct sockaddr_in client_send_addr = addrbyname(address, client_send_port);
+    struct sockaddr_in client_recv_addr = addrbyname(address, client_recv_port);
 
     // select loop
     fd_set mask;

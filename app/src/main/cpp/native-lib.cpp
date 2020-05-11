@@ -69,14 +69,16 @@ Java_com_example_udp_1tools_MainActivity_startClientAndroidFromJNI(
         JNIEnv *env,
         jobject activity,
         jstring ip,
-        jobject paramsObj) {
+        jobject paramsObj,
+        jint client_send_port,
+        jint client_recv_port) {
     jboolean isCopy;
     std::string address_c = env->GetStringUTFChars(ip, &isCopy);
     start_logger("client_android");
 
     struct parameters params = get_parameters(env, paramsObj);
 
-    int status = start_client(address_c.c_str(), params);
+    int status = start_client(address_c.c_str(), params, (int) client_send_port, (int) client_recv_port);
     return status;
 }
 
@@ -88,14 +90,15 @@ Java_com_example_udp_1tools_MainActivity_startControllerFromJNI(
         JNIEnv *env,
         jobject activity,
         jstring ip,
-        jobject paramsObj) {
+        jobject paramsObj,
+        jint client_send_port) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
     setupFeedbackUpload(env, activity);
 
     struct parameters params = get_parameters(env, paramsObj);
 
-    android_start_controller(ip_cpp.c_str(), params);
+    android_start_controller(ip_cpp.c_str(), params, (int) client_send_port);
 }
 
 /**
@@ -116,14 +119,15 @@ Java_com_example_udp_1tools_MainActivity_receiveBandwidthFromJNI(
         JNIEnv *env,
         jobject activity,
         jstring ip,
-        jobject paramsObj) {
+        jobject paramsObj,
+        jint client_recv_port) {
     jboolean isCopy;
     std::string ip_cpp = env->GetStringUTFChars(ip, &isCopy);
     setupFeedbackDownload(env, activity);
 
     struct parameters params = get_parameters(env, paramsObj);
 
-    android_receive_bandwidth(ip_cpp.c_str(), params);
+    android_receive_bandwidth(ip_cpp.c_str(), params, (int) client_recv_port);
 }
 
 /**

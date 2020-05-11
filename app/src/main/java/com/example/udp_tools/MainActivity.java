@@ -98,6 +98,17 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi = inflater.inflate(R.layout.activity_configuration, null);
 
+        final String ip = prefs.getString("ip", ((EditText) vi.findViewById(R.id.ip_address)).getText().toString());
+
+        String uploadPortStr = prefs.getString("uploadPort", ((EditText) vi.findViewById(R.id.upload_port)).getText().toString());
+        final int uploadPort = Integer.parseInt(uploadPortStr);
+
+        String downloadPortStr = prefs.getString("downloadPort", ((EditText) vi.findViewById(R.id.download_port)).getText().toString());
+        final int downloadPort = Integer.parseInt(downloadPortStr);
+
+        String interactivePortStr = prefs.getString("interactivePort", ((EditText) vi.findViewById(R.id.interactive_port)).getText().toString());
+        final int interactivePort = Integer.parseInt(interactivePortStr);
+
         String burstSizeStr = prefs.getString("burstSize", ((EditText) vi.findViewById(R.id.burst_size)).getText().toString());
         int burstSize = Integer.parseInt(burstSizeStr);
 
@@ -190,11 +201,8 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View vi = inflater.inflate(R.layout.activity_configuration, null);
-                        EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                        String ipStr = ipAddress.getText().toString();
-                        int status = startClientAndroidFromJNI(ipStr, params);
+                        int status = startClientAndroidFromJNI(ip, params, uploadPort, downloadPort);
+
                         if (status == 1) {
                             output.append("Bandwidth Measurement: bind error");
                             return;
@@ -207,11 +215,7 @@ public class MainActivity extends AppCompatActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                View vi = inflater.inflate(R.layout.activity_configuration, null);
-                                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                                String ipStr = ipAddress.getText().toString();
-                                receiveBandwidthFromJNI(ipStr, params);
+                                receiveBandwidthFromJNI(ip, params, downloadPort);
                             }
                         }).start();
 
@@ -219,11 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                View vi = inflater.inflate(R.layout.activity_configuration, null);
-                                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                                String ipStr = ipAddress.getText().toString();
-                                startControllerFromJNI(ipStr, params);
+                                startControllerFromJNI(ip, params, uploadPort);
                             }
                         }).start();
 
@@ -260,16 +260,8 @@ public class MainActivity extends AppCompatActivity {
         echoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextView output = findViewById(R.id.output);
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View vi = inflater.inflate(R.layout.activity_configuration, null);
-                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                EditText port = (EditText) vi.findViewById(R.id.interactive_port);
-                String ipStr = ipAddress.getText().toString();
-                int portInt = Integer.parseInt(port.getText().toString());
-
                 String RTT;
-                RTT = echoFromJNI(ipStr, portInt, ++echoSequence);
+                RTT = echoFromJNI(ip, interactivePort, ++echoSequence);
 
                 output.append(RTT + "\n");
                 System.out.println(RTT);
@@ -288,13 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 InteractiveView interactiveView = findViewById(R.id.interactiveView);
                 EditText name = findViewById(R.id.interactive_name);
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View vi = inflater.inflate(R.layout.activity_configuration, null);
-                EditText ipAddress = (EditText) vi.findViewById(R.id.ip_address);
-                EditText port = (EditText) vi.findViewById(R.id.interactive_port);
-                String ipStr = ipAddress.getText().toString();
-                int portInt = Integer.parseInt(port.getText().toString());
-                interactiveView.connect(ipStr, portInt, name.getText().toString());
+                interactiveView.connect(ip, interactivePort, name.getText().toString());
                 connected = true;
                 output.append("Connected\n");
                 name.setText("");
@@ -350,12 +336,12 @@ public class MainActivity extends AppCompatActivity {
 
     public native void stopReceivingThreadFromJNI();
 
-    public native void startControllerFromJNI(String ip, Parameters params);
+    public native void startControllerFromJNI(String ip, Parameters params, int client_send_port);
 
     public native void startDataGeneratorFromJNI();
 
-    public native int startClientAndroidFromJNI(String ip, Parameters params);
+    public native int startClientAndroidFromJNI(String ip, Parameters params, int client_send_port, int client_recv_port);
 
-    public native void receiveBandwidthFromJNI(String ip, Parameters params);
+    public native void receiveBandwidthFromJNI(String ip, Parameters params, int client_recv_port);
 
 }
