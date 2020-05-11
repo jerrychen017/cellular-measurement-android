@@ -11,42 +11,36 @@ These instructions will get you a copy of the project up and running on your loc
 1. Server with three open UDP ports. One port for running the interactive server, and two ports for running bandwidth measurement server. 
 If you want to run bandwidth measurement over TCP, make sure TCP ports are open. 
 
-2. Android Studio
+2. An Android phone or a computer with Android Studio installed (so you can run on emulator). 
 
-### Installing
+### How to run
 
-1. Get bandwidth measurement server program from [cellular-measurement][https://github.com/jerrychen017/cellular-measurement]
-It's located under /bidirectional
+1. Get server programs from [cellular-measurement][https://github.com/jerrychen017/cellular-measurement].  
+They are located under the directory ```executables/```
 
-Simply do a ```make```
-
+2. Run server programs  
+To run `bandwidth_server`:
 ```
-./server <server_send_port> <server_send_port>
+./bandwidth_server <server_send_port> <server_send_port>
 ```
-
-
-
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
+e.g. 
 ```
-Give the example
+./bandwidth_server 4576 4577
 ```
-
-And repeat
-
+To run `interactive_server`:
 ```
-until finished
+./interactive_server <interactive_port> <max_num_users> 
 ```
+e.g.
+```
+./interactive_server 10 
+```
+ 3. Run the Android App  
+ ![alt-text-1](./res/demo-main.png "Demo Main") ![alt-text-2](./res/demo-config.png "Demo Configuration")    
 
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
+ * `Echo` button sends a UDP packet to the server and measures the RTT (round-trip-time) between client (your phone) and server.
+ * `Bandwidth Measurement` button measures upload/download speed.
+ * `Stop` button stops the bandwidth measurement. 
 ### Break down into end to end tests
 
 Explain what these tests test and why
