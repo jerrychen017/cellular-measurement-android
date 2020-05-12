@@ -21,7 +21,7 @@ They are located under the directory ```executables/```
 2. Run server programs  
 To run `bandwidth_server`:
 ```
-./bandwidth_server <server_send_port> <server_send_port>
+./bandwidth_server <server_send_port> <server_recv_port>
 ```
 e.g. 
 ```
@@ -33,7 +33,7 @@ To run `interactive_server`:
 ```
 e.g.
 ```
-./interactive_server 10 
+./interactive_server 4578 10 
 ```
  3. Run the Android App  
  <img width="200" src="./res/demo-main.png"> <img width="200" src="./res/demo-config.png">
@@ -42,16 +42,17 @@ e.g.
  * `Stop` button stops the bandwidth measurement. 
  * `Configuration` button brings you to the configuration page where you can modify parameters. 
 
+#### Before running `Bandwidth Measurement`, go to `Configuration` and make sure `Upload Port` is the same as `<server_recv_port>` and `Download Port` is the same as `<server_send_port>`
 
 ## Built With
 
 * [Android Studio](https://developer.android.com/studio) - IDE for Android Development
-* [Grale](https://gradle.org/) - Dependency Management
+* [Gradle](https://gradle.org/) - Dependency Management
 * [Android NDK](https://developer.android.com/ndk) - Android Native Development Kit
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/jerrychen017/cellular-measurement-android/tags). 
 
 ## Authors
 
